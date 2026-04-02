@@ -1,0 +1,83 @@
+title = "VluxySoundFactory"
+gitRepoUrl = "https://github.com/greenviper126/VluxySoundFactory"
+gitSourceBranch = "master"
+changelog = true
+
+classOrder = [
+  "Cmdr",
+  "CmdrClient",
+
+  "Registry",
+  "Dispatcher",
+  "Util",
+
+  "CommandContext",
+  "ArgumentContext",
+]
+
+[docusaurus]
+organizationName = "vlux"
+projectName = "VluxySoundFactory"
+deploymentBranch = "gh-pages"
+tagline = "The extensible command console for Roblox developers"
+titleDelimiter = "•"
+
+url = "https://eryn.io"
+baseUrl = "/VluxySoundFactory/beta/"
+
+# TODO: Remove when releasing new website
+noIndex = true
+
+[home]
+enabled = true
+includeReadme = false
+
+[navbar]
+title = ""
+
+[navbar.logo]
+alt = "VluxySoundFactory"
+src = "/logo.png"
+
+[[navbar.items]]
+href = "https://github.com/greenviper126/VluxySoundFactory/releases"
+label = "Releases"
+position = "right"
+
+[[navbar.items]]
+href = "https://discord.gg/g5PdMxh"
+label = "Discord"
+position = "right"
+
+[footer]
+copyright = "Built using Docusaurus and Moonwave. Released under the <a href=\"https://github.com/greenviper126/VluxySoundFactory/blob/master/LICENSE\" target=\"_blank\">MIT License</a>."
+
+[[footer.links]]
+title = "Learn"
+[[footer.links.items]]
+label = "Introduction"
+href = "/docs/intro"
+[[footer.links.items]]
+label = "Best practice"
+href = "/docs/advanced/bestpractice"
+[[footer.links.items]]
+label = "API reference"
+href = "/api/Cmdr"
+[[footer.links.items]]
+label = "Changelog"
+href = "/changelog"
+
+[[footer.links]]
+title = "Community"
+[[footer.links.items]]
+label = "Contribute"
+href = "/docs/contribute"
+[[footer.links.items]]
+label = "Security"
+href = "/docs/community/securityreport"
+[[footer.links.items]]
+label = "Discord"
+href = "https://discord.gg/g5PdMxh"
+[[footer.links.items]]
+label = "Bug tracker"
+href = "https://github.com/evaera/Cmdr/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc"

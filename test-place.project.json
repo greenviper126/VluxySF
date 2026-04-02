@@ -1,0 +1,18 @@
+{
+	"name": "VluxySoundFactory",
+	"tree": {
+		"$className": "DataModel",
+		"ReplicatedStorage": {
+			"$className": "ReplicatedStorage",
+			"VluxySoundFactory": {
+				"$path": "VluxySoundFactory"
+			}
+		},
+		"ServerScriptService": {
+			"$className": "ServerScriptService",
+			"Tests": {
+				"$path": "Tests"
+			}
+		}
+	}
+}

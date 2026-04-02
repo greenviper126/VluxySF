@@ -1,0 +1,29 @@
+[package]
+name = "greenviper126/vluxysoundfactory"
+description = "Sound fetching system with a focus on simplicity and saving memory!"
+version = "0.1.0"
+license = "MIT"
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+exclude = ["assets", "docs"]
+include = ["VluxySoundFactory", "default.project.json", "LICENSE"]
+
+[server-dependencies]
+
+#main:
+
+#optional:
+
+[dev-dependencies]
+
+#main:
+
+#optional:
+
+
+[dependencies]
+
+#main:
+trove = "sleitnick/trove@1.5.0"
+
+#optional:
