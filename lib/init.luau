@@ -20,15 +20,8 @@ local Random = Random.new()
 
 ----------------------------------------------------------------------------------------------------------------
 
---[[
-	Custom Sound Player.
-
-	Keeps all sound data in a table and loads it when called.
-	All sounds should be requested from this system on server and client.
-]]
-
 --[=[
-	@class Sounds
+	@class VluxySF
 
 	@client
 	@server
@@ -40,13 +33,13 @@ local Random = Random.new()
 local Sounds = {}
 
 --[=[
-	@within Sounds
+	@within VluxySF
 
 	@private
 
 	@server
 
-	@param folder Configuration | Folder -- Folder containing all sound data
+	@param soundFolder Configuration | Folder -- Folder containing all sound data
 
 	Injects the source folder used to build sound data and sets up server-side structures.
 ]=]
@@ -58,7 +51,7 @@ function Sounds._initServer(soundFolder: Configuration | Folder)
 end
 
 --[=[
-	@within Sounds
+	@within VluxySF
 
 	@private
 
@@ -74,7 +67,7 @@ function Sounds._initClient()
 end
 
 --[=[
-	@within Sounds
+	@within VluxySF
 
 	@return Dictionary<SoundTable> -- All converted sound data
 
@@ -85,7 +78,7 @@ function Sounds.Data(): Types.Dictionary<Types.SoundTable>
 end
 
 --[=[
-	@within Sounds
+	@within VluxySF
 
 	@return { string } -- All registered sound names
 
@@ -102,7 +95,7 @@ function Sounds.AllSoundNames(): { string }
 end
 
 --[=[
-	@within Sounds
+	@within VluxySF
 
 	@param name string -- Name of the sound group
 
@@ -115,7 +108,7 @@ function Sounds.FindSoundGroup(name: string): SoundGroup?
 end
 
 --[=[
-	@within Sounds
+	@within VluxySF
 
 	@return { [string]: SoundGroup } -- Read-only map of sound groups
 
@@ -129,9 +122,9 @@ function Sounds.GetSoundGroups(): Types.Dictionary<SoundGroup>
 end
 
 --[=[
-	@within Sounds
+	@within VluxySF
 
-	@param soundData SoundTable -- Serialized sound data to materialize
+	@param soundTable SoundTable -- Serialized sound data to materialize
 
 	@return Sound -- Newly created sound instance
 
@@ -171,7 +164,7 @@ function Sounds.CreateSound(soundTable: Types.SoundTable): Sound
 end
 
 --[=[
-	@within Sounds
+	@within VluxySF
 
 	@yields
 
@@ -215,7 +208,7 @@ function Sounds.FindSoundByName(name: string, variance: Types.VarianceTable?, pa
 end
 
 --[=[
-	@within Sounds
+	@within VluxySF
 
 	@param name string -- Name of the sound to play
 	@param variance VarianceTable? -- Optional variance callbacks
@@ -237,7 +230,7 @@ function Sounds.PlaySoundByName(name: string, variance: Types.VarianceTable?, pa
 end
 
 --[=[
-	@within Sounds
+	@within VluxySF
 
 	@param minSpeed number? -- Minimum playback speed multiplier (default: 0.95)
 	@param maxSpeed number? -- Maximum playback speed multiplier (default: 1.05)

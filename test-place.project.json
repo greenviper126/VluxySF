@@ -5,18 +5,15 @@
 		"ReplicatedStorage": {
 			"$className": "ReplicatedStorage",
 			"VluxySF": {
-				"$path": "VluxySF"
+				"$path": "lib"
 			}
 		},
-
 		"ServerScriptService": {
 			"$className": "ServerScriptService",
 			"$path": "Tests/ServerScriptService"
 		},
-
 		"StarterPlayer": {
 			"$className": "StarterPlayer",
-			
 			"StarterPlayerScripts": {
 				"$className": "StarterPlayerScripts",
 				"$path": "Tests/StarterPlayerScripts"

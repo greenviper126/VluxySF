@@ -1,20 +1,22 @@
 title = "VluxySF"
 gitRepoUrl = "https://github.com/greenviper126/VluxySF"
-gitSourceBranch = "master"
+
+
 changelog = true
+gitSourceBranch = "master"
 
 [docusaurus]
 organizationName = "vlux"
 projectName = "VluxySF"
 deploymentBranch = "gh-pages"
 tagline = "The extensible command console for Roblox developers"
-titleDelimiter = "•"
 
 url = "https://greenviper126.github.io"
 baseUrl = "/VluxySF/"
 
-# TODO: Remove when releasing new website
-noIndex = true
+[[classOrder]]
+section = "VluxySoundFactory"
+tag = "VluxySF"
 
 [home]
 enabled = true
