@@ -4,173 +4,22 @@
 	This Is designed to make playing sounds and setting them to sound groups much easier.
 	There Is also a Variance Function to help make sounds less repetitive.
 	Use cases for Variance include footsteps, interacting with objects, etc.
+
+	PlayOnRemove doesn't change the sound position once removed. we should wait to destroy it instead.
 ]]
 
-type Dictionary<T> = { [string]: T }
-type SoundChildren = Dictionary<Dictionary<any>>
+local utility = script.Utility
+local internals = script.Internals
 
-export type SoundTable = { Sound: Dictionary<any>, Children: SoundChildren }
-export type VarianceTable = {
-	PlaybackSpeed: () -> number,
-	Volume: () -> number,
-}
+local Properties = require(utility.Properties)
+local Types = require(utility.Types)
 
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local RunService = game:GetService("RunService")
-local ServerStorage = game:GetService("ServerStorage")
-local SoundService = game:GetService("SoundService")
+local Client = require(internals.Client)
+local Server = require(internals.Server)
 
-local Guard = require(ReplicatedStorage.Packages._Index["red-blox_guard@1.0.1"].guard)
-local Ratelimit = require(ReplicatedStorage.Packages.ratelimit)
-local Red = require(ReplicatedStorage.Packages.red)
-
-local Properties = require(ReplicatedStorage.Utility.Properties)
+local soundData: Types.SoundData
 
 local Random = Random.new()
-
-local unattachedSounds: Folder = nil
-local soundGroupContainer: Configuration = nil
-
-local _soundGroups: Dictionary<SoundGroup> = {}
-local _sounds: Dictionary<SoundTable> = nil
-
-----------------------------------------------------------------------------------------------------------------
-
---excepts class names only
-local allowedSoundChildren = {
-	"ChorusSoundEffect",
-	"CompressorSoundEffect",
-	"DistortionSoundEffect",
-	"EchoSoundEffect",
-	"EqualizerSoundEffect",
-	"FlangeSoundEffect",
-	"PitchShiftSoundEffect",
-	"ReverbSoundEffect",
-	"TremoloSoundEffect",
-}
-
-----------------------------------------------------------------------------------------------------------------
-
-local SoundsRequest = Red.Function(
-	"SoundsRequest",
-	function() end,
-	function(Table) --send sound table to client on request
-		return Guard.Map(Guard.String, Guard.Any)(Table)
-	end
-)
-
-----------------------------------------------------------------------------------------------------------------
-
---//Server
-local function GetSoundChildren(sound: Sound): SoundChildren
-	local children = {}
-
-	for _, child in pairs(sound:GetChildren()) do
-		if not table.find(allowedSoundChildren, child.ClassName) then
-			continue
-		end
-
-		children[child.ClassName] = Properties.InstanceToProperties(child)
-	end
-
-	return children
-end
-
-local function CreateSoundTable()
-	local soundFolder: Folder = ServerStorage:FindFirstChild("Sounds") :: Folder
-
-	local soundTable: Dictionary<SoundTable> = {}
-
-	local function RegisterSound(sound: Sound, childFolder)
-		return pcall(function()
-			soundTable[sound.Name] = { --create sound and its children
-				Sound = Properties.InstanceToProperties(sound),
-				Children = GetSoundChildren(sound),
-			}
-
-			soundTable[sound.Name].Sound.Name = sound.Name --add to sound group
-			soundTable[sound.Name].Sound.SoundGroup = childFolder.Name --add to sound group
-		end)
-	end
-
-	local function SetGroupedSounds(childFolder: Instance)
-		for _, sound in pairs(childFolder:GetDescendants()) do
-			if not sound:IsA("Sound") then
-				continue
-			end
-
-			local success, errorMessage = RegisterSound(sound, childFolder)
-
-			if not success then
-				warn(errorMessage)
-			end
-		end
-	end
-
-	soundGroupContainer = Instance.new("Configuration")
-	soundGroupContainer.Name = "SoundGroups"
-
-	--first set of children defines sound groups
-	for _, childFolder in pairs(soundFolder:GetChildren()) do
-		local soundGroup = Instance.new("SoundGroup")
-		soundGroup.Name = childFolder.Name
-		soundGroup.Parent = soundGroupContainer
-
-		_soundGroups[childFolder.Name] = soundGroup
-
-		SetGroupedSounds(childFolder)
-	end
-
-	soundGroupContainer.Parent = SoundService
-
-	_sounds = soundTable
-end
-
---//Client
-local function GetSoundForClient()
-	local success, sounds = SoundsRequest:Call():Await()
-	if success then
-		_sounds = sounds
-	else
-		warn("Server did not return sounds to local player, re-attempting!")
-
-		task.wait(0.5)
-
-		GetSoundForClient()
-	end
-end
-
-----------------------------------------------------------------------------------------------------------------
-
-if RunService:IsServer() then
-	--base
-	unattachedSounds = Instance.new("Folder")
-	unattachedSounds.Name = "UnattachedSounds"
-	unattachedSounds.Parent = SoundService
-
-	--convert Sounds
-	CreateSoundTable()
-
-	--send conversion to client
-	local soundRequestLimit = Ratelimit(5, 5)
-	SoundsRequest:SetCallback(function(_player)
-		if not soundRequestLimit(_player) then
-			warn("Sound data was requested too many times by", _player)
-			return {}
-		end
-
-		return _sounds
-	end)
-elseif RunService:IsClient() then
-	GetSoundForClient() --yielding
-
-	unattachedSounds = SoundService:WaitForChild("UnattachedSounds") :: Folder
-	soundGroupContainer = SoundService:WaitForChild("SoundGroups") :: Configuration
-
-	for _, soundGroup in pairs(soundGroupContainer:GetChildren()) do
-		_soundGroups[soundGroup.Name] = soundGroup :: SoundGroup
-	end
-end
 
 ----------------------------------------------------------------------------------------------------------------
 
@@ -180,56 +29,134 @@ end
 	Keeps all sound data in a table and loads it when called.
 	All sounds should be requested from this system on server and client.
 ]]
+
+--[=[
+	@class Sounds
+
+	@client
+	@server
+
+	@tag Package
+
+	Cross-context sound package for loading, creating, and playing registered sounds.
+]=]
 local Sounds = {}
 
---[[
-	Returns name of sound group if it exists.
+--[=[
+	@within Sounds
 
-	@param name string - Name of the SoundGroup.
+	@private
 
-	@return SoundGroup? - The SoundGroup you were looking for.
-]]
-function Sounds.FindSoundGroup(name: string): SoundGroup?
-	return _soundGroups[name]
+	@server
+
+	@param folder Configuration | Folder -- Folder containing all sound data
+
+	Injects the source folder used to build sound data and sets up server-side structures.
+]=]
+function Sounds._initServer(soundFolder: Configuration | Folder)
+	Server._initServer(soundFolder)
+
+	soundData = Server.GetSoundData()
 end
 
---[[
-	Returns all sound groups that exist.
-	
-	Read-Only, Instance properties can be changed.
+--[=[
+	@within Sounds
 
-	@return { [string]: SoundGroup } - A list of all SoundGroups.
-]]
-function Sounds.GetSoundGroups(): Dictionary<SoundGroup>
-	local cloneOfSoundGroups = table.clone(_soundGroups)
+	@private
+
+	@client
+
+	Sets up client-side structures and retrieves sound data from the server.
+]=]
+function Sounds._initClient()
+	Client._initClient()
+
+	soundData = Client.GetSoundData()
+end
+
+--[=[
+	@within Sounds
+
+	@return Dictionary<SoundTable> -- All converted sound data
+
+	Returns all serialized sound data.
+]=]
+function Sounds.Data(): Types.Dictionary<Types.SoundTable>
+	return soundData.Sounds
+end
+
+--[=[
+	@within Sounds
+
+	@return { string } -- All registered sound names
+
+	Returns all sound names.
+]=]
+function Sounds.AllSoundNames(): { string }
+	local names = {}
+
+	for name, _ in pairs(soundData.Sounds) do
+		table.insert(names, name)
+	end
+
+	return names
+end
+
+--[=[
+	@within Sounds
+
+	@param name string -- Name of the sound group
+
+	@return SoundGroup? -- Matching sound group, if found
+
+	Finds a sound group by name.
+]=]
+function Sounds.FindSoundGroup(name: string): SoundGroup?
+	return soundData.SoundGroups[name]
+end
+
+--[=[
+	@within Sounds
+
+	@return { [string]: SoundGroup } -- Read-only map of sound groups
+
+	Returns all sound groups.
+	
+	Read-only table; the instances themselves remain mutable.
+]=]
+function Sounds.GetSoundGroups(): Types.Dictionary<SoundGroup>
+	local cloneOfSoundGroups = table.clone(soundData.SoundGroups)
 	return table.freeze(cloneOfSoundGroups)
 end
 
---[[
-	Converts SoundTable Data into a real sound Instance.
-	Can also remember child modifiers for manipulating sound.
+--[=[
+	@within Sounds
 
-	@param soundData SoundTable - Table storing all the data to make a sound Instance.
+	@param soundData SoundTable -- Serialized sound data to materialize
 
-	@return Sound - The sound Instance you requested to be made from a SoundTable.
-]]
-function Sounds.CreateSound(soundData: SoundTable): Sound
+	@return Sound -- Newly created sound instance
+
+	Converts serialized sound data into a playable `Sound` instance.
+]=]
+function Sounds.CreateSound(soundTable: Types.SoundTable): Sound
 	local newSound = Instance.new("Sound")
 	newSound:AddTag("FrameworkSound")
 
-	if not _sounds then
+	if not soundData.Sounds then
+		warn("Sounds not loaded yet!")
+
 		newSound.Name = "SoundsNotLoadedYet"
 		return newSound
 	end
 
-	for property, value in pairs(soundData.Sound) do --create new sound
+	for property, value in pairs(soundTable.Sound) do --create new sound
 		Properties.ApplyPropertyValueToInstance(newSound, property, value)
 	end
 
-	local realSoundGroup = Sounds.FindSoundGroup(soundData.Sound.SoundGroup)
+	local realSoundGroup = Sounds.FindSoundGroup(soundTable.Sound.SoundGroup)
 	newSound.SoundGroup = realSoundGroup
 
-	for class, properties in pairs(soundData.Children) do --create new sound children
+	for class, properties in pairs(soundTable.Children) do --create new sound children
 		pcall(function()
 			local newClass = Instance.new(class)
 
@@ -244,34 +171,42 @@ function Sounds.CreateSound(soundData: SoundTable): Sound
 	return newSound
 end
 
---[[
-	Searches through all the saved sounds and makes an Instance of it.
+--[=[
+	@within Sounds
 
-	@param name string - The name of the sound you want to play.
-	@param variance VarianceTable? - A table for varying the sound to make it less repetitive.
-	@param parent Instance? - The instance you want to parent the sound too.
+	@yields
 
-	@return Sound? - Returns a Sound if it exists.
-]]
-function Sounds.FindSoundByName(name: string, variance: VarianceTable?, parent: Instance?): Sound?
-	local soundData = _sounds[name]
+	@param name string -- Name of the sound to find
+	@param variance VarianceTable? -- Optional variance callbacks
+	@param parent Instance? -- Optional parent for the created sound
 
-	if not _sounds then
+	@return Sound? -- Created sound, if found
+
+	Finds a sound by name and materializes it as an instance.
+]=]
+function Sounds.FindSoundByName(name: string, variance: Types.VarianceTable?, parent: Instance?): Sound?
+	local soundTables = soundData.Sounds[name]
+
+	if not soundData.Sounds then
 		warn("Sound data is currently nil, cannot pull sound named " .. name)
-		return
+		return nil
 	end
 	if not soundData then
 		warn("Could not find sound named " .. name)
-		return
+		return nil
 	end
 
-	local newSound = Sounds.CreateSound(soundData)
+	local newSound = Sounds.CreateSound(soundTables)
 	if newSound then
-		newSound.Parent = parent and parent or unattachedSounds
+		newSound.Parent = parent and parent or soundData.UnattachedSounds
 
 		if variance then
 			newSound.PlaybackSpeed = newSound.PlaybackSpeed * (variance.PlaybackSpeed() or 1)
 			newSound.Volume = newSound.Volume * (variance.Volume() or 1)
+		end
+
+		if not newSound.IsLoaded then
+			newSound.Loaded:Wait()
 		end
 	else
 		warn("Could not create sound named " .. name)
@@ -280,36 +215,46 @@ function Sounds.FindSoundByName(name: string, variance: VarianceTable?, parent: 
 	return newSound
 end
 
---[[
-	Will automatically play the sound and clean it up when called.
+--[=[
+	@within Sounds
 
-	@param name string - The name of the sound you want to play.
-	@param variance VarianceTable? - A table for varying the sound to make it less repetitive.
-	@param parent Instance? - The instance you want to parent the sound too.
+	@param name string -- Name of the sound to play
+	@param variance VarianceTable? -- Optional variance callbacks
+	@param parent Instance? -- Optional parent for playback
 
-	@return nil
-]]
-function Sounds.PlaySoundByName(name: string, variance: VarianceTable?, parent: Instance?)
-	local sound = Sounds.FindSoundByName(name, variance, parent)
-	if not sound then
-		return
-	end
+	Plays a sound by name and destroys it after playback starts.
+]=]
+function Sounds.PlaySoundByName(name: string, variance: Types.VarianceTable?, parent: Instance?)
+	task.spawn(function()
+		local sound = Sounds.FindSoundByName(name, variance, parent)
+		if not sound then
+			return
+		end
 
-	sound.PlayOnRemove = true
-	sound:Destroy()
+		--this should wait to destroy instead
+		sound.PlayOnRemove = true
+		sound:Destroy()
+	end)
 end
 
---[[
-	Creates random variance values for sound playback.
-	
-	@param minSpeed number? - Minimum playback speed multiplier (default: 0.95).
-	@param maxSpeed number? - Maximum playback speed multiplier (default: 1.05).
-	@param minVolume number? - Minimum volume multiplier (default: 0.95).
-	@param maxVolume number? - Maximum volume multiplier (default: 1.05).
+--[=[
+	@within Sounds
 
-	@return VarianceTable - Random options decided from the given params.
-]]
-function Sounds.Variance(minSpeed: number?, maxSpeed: number?, minVolume: number?, maxVolume: number?): VarianceTable
+	@param minSpeed number? -- Minimum playback speed multiplier (default: 0.95)
+	@param maxSpeed number? -- Maximum playback speed multiplier (default: 1.05)
+	@param minVolume number? -- Minimum volume multiplier (default: 0.95)
+	@param maxVolume number? -- Maximum volume multiplier (default: 1.05)
+
+	@return VarianceTable -- Randomized variance callbacks
+
+	Creates variance callbacks for sound playback speed and volume.
+]=]
+function Sounds.Variance(
+	minSpeed: number?,
+	maxSpeed: number?,
+	minVolume: number?,
+	maxVolume: number?
+): Types.VarianceTable
 	return {
 		PlaybackSpeed = function()
 			return Random:NextNumber(minSpeed or 0.95, maxSpeed or 1.05)

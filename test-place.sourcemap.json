@@ -1,0 +1,1 @@
+{"name":"VluxySF","className":"ModuleScript","filePaths":["VluxySF\\init.luau","default.project.json"],"children":[{"name":"Properties","className":"ModuleScript","filePaths":["VluxySF\\Properties.luau"]},{"name":"Server","className":"ModuleScript","filePaths":["VluxySF\\Server.luau"]},{"name":"Types","className":"ModuleScript","filePaths":["VluxySF\\Types.luau"]}]}

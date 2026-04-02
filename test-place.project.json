@@ -8,10 +8,18 @@
 				"$path": "VluxySF"
 			}
 		},
+
 		"ServerScriptService": {
 			"$className": "ServerScriptService",
-			"Tests": {
-				"$path": "Tests"
+			"$path": "Tests/ServerScriptService"
+		},
+
+		"StarterPlayer": {
+			"$className": "StarterPlayer",
+			
+			"StarterPlayerScripts": {
+				"$className": "StarterPlayerScripts",
+				"$path": "Tests/StarterPlayerScripts"
 			}
 		}
 	}
