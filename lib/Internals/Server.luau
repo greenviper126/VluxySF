@@ -37,23 +37,23 @@ local soundGroupContainerFolder = Instance.new("Configuration")
 soundGroupContainerFolder.Name = "SoundGroups"
 soundGroupContainerFolder.Parent = SoundService
 
-local soundData: Types.SoundData = {
+local soundSchema: Types.SoundSchema = {
 	UnattachedSounds = unattachedSoundsFolder,
 	SoundGroupContainer = soundGroupContainerFolder,
 	SoundGroups = {},
-	Sounds = {},
+	SoundDefinitions = {},
 }
 
 ------------------------------------------------------------------------------------------------------------------------
 
 --[[
-    Retrieves the children of a sound instance that are valid sound effects and converts them into tables.
+    Retrieves the sound effects of a sound instance that are valid sound effects and converts them into tables.
 
     @param sound Sound - The sound instance to retrieve children from.
 
-    @return Types.SoundChildren - A dictionary of the sound's valid children converted into tables, organized by class name.
+    @return Types.SoundEffectDefinitions - A dictionary of the sound's valid children converted into tables, organized by class name.
 ]]
-local function GetSoundChildren(sound: Sound): Types.SoundChildren
+local function GetSoundEffectDefinitions(sound: Sound): Types.SoundEffectDefinitions
 	local children = {}
 
 	for _, child in pairs(sound:GetChildren()) do
@@ -70,37 +70,37 @@ end
 ------------------------------------------------------------------------------------------------------------------------
 
 --[[
-    Registers a sound and its children into the sound table.
+    Registers a sound and its effects into the sound definitions.
 
-    @param soundTable Types.Dictionary<Types.SoundTable> - The sound table to add the sound to.
+    @param soundDefinition Types.SoundDefinition - The sound definition to add the sound to.
     @param sound Sound - The sound instance to register.
     @param childFolder Instance - The folder containing the sound for grouping purposes.
 ]]
-local function registerSound(soundTable: Types.Dictionary<Types.SoundTable>, sound: Sound, childFolder: Instance)
+local function registerSound(soundDefinition: Types.SoundDefinition, sound: Sound, childFolder: Instance)
 	return pcall(function()
-		soundTable[sound.Name] = { --create sound and its children
-			Sound = Properties.InstanceToProperties(sound),
-			Children = GetSoundChildren(sound),
+		soundDefinition[sound.Name] = { --create sound and its effects
+			Properties = Properties.InstanceToProperties(sound),
+			Effects = GetSoundEffectDefinitions(sound),
 		}
 
-		soundTable[sound.Name].Sound.Name = sound.Name --add to sound group
-		soundTable[sound.Name].Sound.SoundGroup = childFolder.Name --add to sound group
+		soundDefinition[sound.Name].Properties.Name = sound.Name --add to sound group
+		soundDefinition[sound.Name].Properties.SoundGroup = childFolder.Name --add to sound group
 	end)
 end
 
 --[[
-    Sets grouped sounds from a folder into the sound table.
+    Sets grouped sounds from a folder into the sound definitions.
 
-    @param soundTable Types.Dictionary<Types.SoundTable> - The sound table to add the sounds to.
+    @param soundDefinition Types.SoundDefinition - The sound definition to add the sounds to.
     @param childFolder Instance - The folder containing the sounds to add.
 ]]
-local function setGroupedSounds(soundTable: Types.Dictionary<Types.SoundTable>, childFolder: Instance)
+local function setGroupedSounds(soundDefinition: Types.SoundDefinition, childFolder: Instance)
 	for _, sound in pairs(childFolder:GetDescendants()) do
 		if not sound:IsA("Sound") then
 			continue
 		end
 
-		local success, errorMessage = registerSound(soundTable, sound, childFolder)
+		local success, errorMessage = registerSound(soundDefinition, sound, childFolder)
 
 		if not success then
 			warn(errorMessage)
@@ -109,27 +109,27 @@ local function setGroupedSounds(soundTable: Types.Dictionary<Types.SoundTable>, 
 end
 
 --[[
-    Creates sound tables for all sounds in the given folder and organizes them by group.
+    Creates sound definitions for all sounds in the given folder and organizes them by group.
 
     @param soundFolder Configuration - The folder containing sound group folders and unattached sounds.
 
-    @return Types.Dictionary<Types.SoundTable> - The created sound table dictionary.
+    @return Types.SoundDefinitions - The created sound definitions dictionary.
 ]]
-local function createSoundTable(soundFolder: Configuration)
-	local soundTable: Types.Dictionary<Types.SoundTable> = {}
+local function createSoundDefinitions(soundFolder: Configuration)
+	local soundDefinitions: Types.SoundDefinitions = {}
 
 	--first set of children defines sound groups
 	for _, childFolder in pairs(soundFolder:GetChildren()) do
 		local soundGroup = Instance.new("SoundGroup")
 		soundGroup.Name = childFolder.Name
-		soundGroup.Parent = soundData.SoundGroupContainer
+		soundGroup.Parent = soundSchema.SoundGroupContainer
 
-		soundData.SoundGroups[childFolder.Name] = soundGroup
+		soundSchema.SoundGroups[childFolder.Name] = soundGroup
 
-		setGroupedSounds(soundTable, childFolder)
+		setGroupedSounds(soundDefinitions, childFolder)
 	end
 
-	soundData.Sounds = soundTable
+	soundSchema.SoundDefinitions = soundDefinitions
 end
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -137,13 +137,13 @@ end
 --[[
 	Initializes the server sound system.
 
-	Creates unattached sound folder and converts all sounds into tables.
+	Creates unattached sound folder and converts all sounds into sound definitions organized by group, then sets up a RemoteFunction for clients to request the sound schema.
 
 	@param soundFolder Configuration - The folder containing sound group folders and unattached sounds.
 ]]
 local function initializeServerSoundSystem(soundFolder: Configuration)
 	--convert Sounds
-	createSoundTable(soundFolder)
+	createSoundDefinitions(soundFolder)
 
 	--send conversion to client
 	local soundRequestLimit = Ratelimit(5, 5)
@@ -153,7 +153,7 @@ local function initializeServerSoundSystem(soundFolder: Configuration)
 			return nil
 		end
 
-		return soundData
+		return soundSchema
 	end)
 end
 
@@ -183,12 +183,12 @@ function ServerData._initServer(soundFolder: Configuration | Folder)
 end
 
 --[[
-	Retrieves the SoundData.
+	Retrieves the SoundSchema.
 
-	@return Types.SoundData - The sound data containing unattached sounds, sound groups, and sound tables.
+	@return Types.SoundSchema - The sound schema containing unattached sounds, sound groups, and sound definitions.
 ]]
-function ServerData.GetSoundData(): Types.SoundData
-	return soundData
+function ServerData.GetSoundSchema(): Types.SoundSchema
+	return soundSchema
 end
 
 return ServerData

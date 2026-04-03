@@ -2,44 +2,37 @@
 
 ------------------------------------------------------------------------------------------------------------------------
 
-export type Dictionary<T> = { [string]: T }
-
-export type SoundChildren = Dictionary<Dictionary<any>>
+type Dictionary<T> = { [string]: T }
 
 ------------------------------------------------------------------------------------------------------------------------
 
---[[
-	@interface SoundTable
-	@within VluxySF
+export type SoundEffectDefinition = Dictionary<any>
 
-	.Sound Dictionary<any> -- Serialized sound properties used to reconstruct the main `Sound` instance.
-	.Children SoundChildren -- Serialized sound effect children used to reconstruct the main `Sound` instance.
+export type SoundEffectDefinitions = Dictionary<SoundEffectDefinition>
 
-	Serialized sound definition used to reconstruct a `Sound` instance and its effect children.
-]]
-export type SoundTable = { Sound: Dictionary<any>, Children: SoundChildren }
+export type SoundProperties = Dictionary<any>
 
---[[
-	@interface VarianceTable
-	@within VluxySF
+export type SoundDefinition = {
+	Properties: SoundProperties,
+	Effects: SoundEffectDefinitions,
+}
 
-	.PlaybackSpeed () -> number -- Callback that returns a randomized playback speed multiplier.
-	.Volume () -> number -- Callback that returns a randomized volume multiplier.
+export type SoundDefinitions = Dictionary<SoundDefinition>
 
-	Variance callbacks used to randomize playback speed and volume.
-]]
-export type VarianceTable = {
+export type SoundGroups = Dictionary<SoundGroup>
+
+export type SoundVariance = {
 	PlaybackSpeed: () -> number,
 	Volume: () -> number,
 }
 
 ------------------------------------------------------------------------------------------------------------------------
 
-export type SoundData = {
+export type SoundSchema = {
 	UnattachedSounds: Configuration,
 	SoundGroupContainer: Configuration,
-	SoundGroups: Dictionary<SoundGroup>,
-	Sounds: Dictionary<SoundTable>,
+	SoundGroups: SoundGroups,
+	SoundDefinitions: SoundDefinitions,
 }
 
 return nil

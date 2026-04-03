@@ -8,6 +8,7 @@
         "Psnr",
         "setmetatable",
         "Vluxy",
+        "vluxysf",
         "vluxysoundfactory"
     ],
     "luau-lsp.sourcemap.enabled": true,

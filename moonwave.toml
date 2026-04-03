@@ -14,10 +14,6 @@ tagline = "The extensible command console for Roblox developers"
 url = "https://greenviper126.github.io"
 baseUrl = "/VluxySF/"
 
-[[classOrder]]
-section = "VluxySoundFactory"
-tag = "VluxySF"
-
 [home]
 enabled = true
 includeReadme = false

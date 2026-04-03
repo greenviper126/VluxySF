@@ -11,18 +11,18 @@ local Types = require(utility.Types)
 
 ------------------------------------------------------------------------------------------------------------------------
 
-local soundData: Types.SoundData
+local soundSchema: Types.SoundSchema
 
 ----------------------------------------------------------------------------------------------------------------
 
 --[[
-	Requests SoundData from server.
+	Requests SoundSchema from server.
 
 	@yields
 
-	@return Types.SoundData - The sound data containing unattached sounds, sound groups, and sound tables.
+	@return Types.SoundSchema - The sound schema containing unattached sounds, sound groups, and sound definitions.
 ]]
-local function getDataForClient(): Types.SoundData
+local function getDataForClient(): Types.SoundSchema
 	local remoteFunction = RemoteFunction.new("SoundRequest")
 	local response = remoteFunction:Fire()
 
@@ -54,16 +54,16 @@ function ClientData._initClient()
 		error("Cannot initialize client on server!")
 	end
 
-	soundData = getDataForClient()
+	soundSchema = getDataForClient()
 end
 
 --[[
-	Retrieves the SoundData.
+	Retrieves the SoundSchema.
 
-	@return Types.SoundData - The sound data containing unattached sounds, sound groups, and sound tables.
+	@return Types.SoundSchema - The sound schema containing unattached sounds, sound groups, and sound definitions.
 ]]
-function ClientData.GetSoundData(): Types.SoundData
-	return soundData
+function ClientData.GetSoundSchema(): Types.SoundSchema
+	return soundSchema
 end
 
 return ClientData
