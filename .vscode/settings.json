@@ -7,6 +7,7 @@
         "pcall",
         "Psnr",
         "setmetatable",
+        "Vlux",
         "Vluxy",
         "vluxysf",
         "vluxysoundfactory"
