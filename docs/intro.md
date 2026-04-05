@@ -43,7 +43,7 @@ In order to start using VluxySF you need to initialize the package on both the s
 
 ### SoundFolder
 
-In order to setup the soundFolder see this page [Configuring Sounds](./soundSetup)
+In order to setup the soundFolder see this page [Configuring Sounds](/docs/soundSetup)
 
 ### Server
 

@@ -17,6 +17,7 @@ local ALLOWED_SOUND_CHILDREN = {
 
 ------------------------------------------------------------------------------------------------------------------------
 
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local SoundService = game:GetService("SoundService")
 
@@ -25,7 +26,9 @@ local utility = script.Parent.Parent.Utility
 local Properties = require(utility.Properties)
 local Ratelimit = require(utility.RateLimit)
 local RemoteFunction = require(utility.RemoteFunction)
-local Types = require(utility.Types)
+
+local SoundEntity = require(ReplicatedStorage.VluxySF.SoundEntity)
+local Types = require(script.Parent.Parent.Types)
 
 ------------------------------------------------------------------------------------------------------------------------
 
@@ -72,35 +75,35 @@ end
 --[[
     Registers a sound and its effects into the sound definitions.
 
-    @param soundDefinition Types.SoundDefinition - The sound definition to add the sound to.
+    @param soundDefinitions Types.SoundDefinitions - The sound definitions dictionary to add the sound to.
     @param sound Sound - The sound instance to register.
     @param childFolder Instance - The folder containing the sound for grouping purposes.
 ]]
-local function registerSound(soundDefinition: Types.SoundDefinition, sound: Sound, childFolder: Instance)
+local function registerSound(soundDefinitions: Types.SoundDefinitions, sound: Sound, childFolder: Instance)
 	return pcall(function()
-		soundDefinition[sound.Name] = { --create sound and its effects
+		soundDefinitions[sound.Name] = { --create sound and its effects
 			Properties = Properties.InstanceToProperties(sound),
 			Effects = GetSoundEffectDefinitions(sound),
 		}
 
-		soundDefinition[sound.Name].Properties.Name = sound.Name --add to sound group
-		soundDefinition[sound.Name].Properties.SoundGroup = childFolder.Name --add to sound group
+		soundDefinitions[sound.Name].Properties.Name = sound.Name --add to sound group
+		soundDefinitions[sound.Name].Properties.SoundGroup = childFolder.Name --add to sound group
 	end)
 end
 
 --[[
     Sets grouped sounds from a folder into the sound definitions.
 
-    @param soundDefinition Types.SoundDefinition - The sound definition to add the sounds to.
+    @param soundDefinitions Types.SoundDefinitions - The sound definitions dictionary to add the sounds to.
     @param childFolder Instance - The folder containing the sounds to add.
 ]]
-local function setGroupedSounds(soundDefinition: Types.SoundDefinition, childFolder: Instance)
+local function setGroupedSounds(soundDefinitions: Types.SoundDefinitions, childFolder: Instance)
 	for _, sound in pairs(childFolder:GetDescendants()) do
 		if not sound:IsA("Sound") then
 			continue
 		end
 
-		local success, errorMessage = registerSound(soundDefinition, sound, childFolder)
+		local success, errorMessage = registerSound(soundDefinitions, sound, childFolder)
 
 		if not success then
 			warn(errorMessage)
@@ -180,6 +183,9 @@ function ServerData._initServer(soundFolder: Configuration | Folder)
 	end
 
 	initializeServerSoundSystem(soundFolder :: Configuration)
+
+	-- class for manipulating sounds
+	SoundEntity._injectSoundSchema(soundSchema)
 end
 
 --[[

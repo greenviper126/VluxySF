@@ -12,7 +12,10 @@ local utility = script.Utility
 local internals = script.Internals
 
 local Properties = require(utility.Properties)
-local Types = require(utility.Types)
+local Trove = require(utility.Trove)
+local Types = require(script.Types)
+
+local SoundEntity = require(script.SoundEntity)
 
 ----------------------------------------------------------------------------------------------------------------
 
@@ -153,7 +156,7 @@ end
 	Returns all serialized sound data.
 ]=]
 function Sounds.SoundDefinitions(): SoundDefinitions
-	return soundSchema.SoundDefinitions
+	return soundSchema.SoundDefinitions -- this needs to be deep frozen or cloned
 end
 
 --[=[
@@ -195,9 +198,22 @@ end
 	
 	Read-only table; the instances themselves remain mutable.
 ]=]
-function Sounds.GetSoundGroups(): SoundGroups
+function Sounds.GetSoundGroup(): SoundGroups
 	local cloneOfSoundGroups = table.clone(soundSchema.SoundGroups)
 	return table.freeze(cloneOfSoundGroups)
+end
+
+--[[
+	@within VluxySF
+
+	@param sound string | SoundDefinition -- The name of the sound to create or a sound definition to create from
+
+	@return SoundEntity - A SoundEntity instance representing the created sound.
+
+	Creates a SoundEntity instance from a sound name or definition. If a name is provided, it looks up the corresponding sound definition and creates the sound accordingly.
+]]
+function Sounds.Create(sound: string | Types.SoundDefinition): SoundEntity.SoundEntity
+	return SoundEntity.new(sound)
 end
 
 --[=[
@@ -209,7 +225,7 @@ end
 
 	Converts serialized sound data into a playable `Sound` instance.
 ]=]
-function Sounds.CreateSound(soundDefinition: SoundDefinition): Sound
+function Sounds.CreateRawSound(soundDefinition: SoundDefinition): Sound
 	local newSound = Instance.new("Sound")
 	newSound:AddTag("FrameworkSound")
 
@@ -289,6 +305,46 @@ end
 --[=[
 	@within VluxySF
 
+	@param sound Sound -- Sound instance to inspect
+
+	@return number -- Estimated remaining playback time in seconds
+
+	Returns the most accurate remaining playtime estimate.
+]=]
+function Sounds.GetEstimatedPlayLength(sound: Sound): number
+	local padding = 0.05
+
+	if sound.Looped then
+		return math.huge
+	end
+
+	local playbackSpeed = sound.PlaybackSpeed
+	if playbackSpeed <= 0 or playbackSpeed ~= playbackSpeed then
+		return padding
+	end
+
+	local timeLength = sound.TimeLength
+	if timeLength <= 0 or timeLength ~= timeLength then
+		return padding
+	end
+
+	local timePosition = sound.TimePosition
+	if timePosition ~= timePosition then
+		timePosition = 0
+	end
+	timePosition = math.clamp(timePosition, 0, timeLength)
+
+	local remaining = (timeLength - timePosition) / playbackSpeed
+	if remaining ~= remaining then
+		return padding
+	end
+
+	return math.max(remaining + padding, padding)
+end
+
+--[=[
+	@within VluxySF
+
 	@param name string -- Name of the sound to play
 	@param variance SoundVariance? -- Optional variance callbacks
 	@param parent Instance? -- Optional parent for playback
@@ -296,16 +352,30 @@ end
 	Plays a sound by name and destroys it after playback starts.
 ]=]
 function Sounds.PlaySoundByName(name: string, variance: SoundVariance?, parent: Instance?)
-	task.spawn(function()
-		local sound = Sounds.FindSoundByName(name, variance, parent)
-		if not sound then
-			return
-		end
+	local cleaner = Trove.new()
 
-		--this should wait to destroy instead
-		sound.PlayOnRemove = true
+	local sound = Sounds.FindSoundByName(name, variance, parent)
+	if not sound then
+		return
+	end
+	cleaner:AttachToInstance(sound)
+
+	--backup
+	local playtime = Sounds.GetEstimatedPlayLength(sound)
+	cleaner:Add(task.delay(playtime, function()
 		sound:Destroy()
-	end)
+	end))
+
+	--cleanupSound after it plays
+	cleaner:Add(task.spawn(function()
+		sound:Play()
+
+		sound.Ended:Wait()
+
+		sound:Destroy()
+	end))
+
+	return cleaner
 end
 
 --[=[

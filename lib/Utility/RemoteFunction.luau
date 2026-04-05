@@ -9,12 +9,12 @@ remoteFunction.__index = remoteFunction
 
 -- Types
 export type Constructor = {
-	new: (name: string, event: (...any) -> ()?) -> RemoteFunction,
+	new: (name: string, event: ((...any) -> ...any)?) -> RemoteFunction,
 }
 
 export type RemoteFunction = {
-	Event: (...any) -> ()?,
-	Fire: (self: RemoteFunction, ...any) -> any...,
+	Event: ((...any) -> ...any)?,
+	Fire: (self: RemoteFunction, ...any) -> ...any?,
 	Destroy: (self: RemoteFunction) -> (),
 }
 
