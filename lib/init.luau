@@ -203,15 +203,15 @@ function Sounds.GetSoundGroup(): SoundGroups
 	return table.freeze(cloneOfSoundGroups)
 end
 
---[[
+--[=[
 	@within VluxySF
 
 	@param sound string | SoundDefinition -- The name of the sound to create or a sound definition to create from
 
-	@return SoundEntity - A SoundEntity instance representing the created sound.
+	@return SoundEntity -- A SoundEntity instance representing the created sound.
 
 	Creates a SoundEntity instance from a sound name or definition. If a name is provided, it looks up the corresponding sound definition and creates the sound accordingly.
-]]
+]=]
 function Sounds.Create(sound: string | Types.SoundDefinition): SoundEntity.SoundEntity
 	return SoundEntity.new(sound)
 end
@@ -225,7 +225,7 @@ end
 
 	Converts serialized sound data into a playable `Sound` instance.
 ]=]
-function Sounds.CreateRawSound(soundDefinition: SoundDefinition): Sound
+function Sounds.CreateSound(soundDefinition: SoundDefinition): Sound
 	local newSound = Instance.new("Sound")
 	newSound:AddTag("FrameworkSound")
 
