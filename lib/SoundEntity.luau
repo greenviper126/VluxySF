@@ -1,11 +1,21 @@
 --!strict
 
+local ContentProvider = game:GetService("ContentProvider")
 local TweenService = game:GetService("TweenService")
 
+local Tables = require(script.Parent.Utility.Tables)
 local Trove = require(script.Parent.Utility.Trove)
 local Types = require(script.Parent.Types)
 
 local SoundTools = require(script.Parent.SoundTools)
+
+--[=[
+	@within SoundEntity
+	@type PreloadCallback (assetId: string, assetFetchStatus: Enum.AssetFetchStatus) -> ()
+
+	Callback function that PreLoadAsync uses.
+]=]
+type PreloadCallback = (assetId: string, assetFetchStatus: Enum.AssetFetchStatus) -> ()
 
 --[=[
 	@class SoundEntity
@@ -73,10 +83,13 @@ function SoundEntity.new(sound: string | Types.SoundDefinition): SoundEntity
 
 		self._sound = SoundTools.CreateSound(SoundEntity.SoundSchema, self._soundDefinition)
 	else
-		self.soundName = sound.Properties.Name
-		self._soundDefinition = sound
-		self._sound = SoundTools.CreateSound(SoundEntity.SoundSchema, sound)
+		self._soundDefinition = Tables.DeepClone(sound)
+
+		self.soundName = self._soundDefinition.Properties.Name
+		self._sound = SoundTools.CreateSound(SoundEntity.SoundSchema, self._soundDefinition)
 	end
+
+	self._cleaner:AttachToInstance(self._sound)
 
 	return self
 end
@@ -96,6 +109,35 @@ function SoundEntity.Clone(self: SoundEntity)
 	clonedSoundDefinition.Properties.IsPlaying = false
 
 	return SoundEntity.new(clonedSoundDefinition)
+end
+
+--[=[
+	@method Preload
+	@within SoundEntity
+
+	@yields
+
+	@param callback PreloadCallback? -- Optional callback to handle the sound successfully preloading or failing to preload.
+
+	@return SoundEntity -- The SoundEntity instance after starting the preload.
+
+	Preloads the sound's audio asset to reduce latency when it is first played. This applies to all future sounds with the same assetId.
+
+	Doing this increases memory usage on the client and is not reversible. Only use if needed!
+]=]
+function SoundEntity.Preload(self: SoundEntity, callback: PreloadCallback?): SoundEntity
+	local realCallback = callback
+		or function(assetId, assetFetchStatus)
+			if assetFetchStatus == Enum.AssetFetchStatus.Success then
+				return
+			end
+
+			warn(`Sound with assetId {assetId} failed to preload with status {assetFetchStatus} !`)
+		end
+
+	ContentProvider:PreloadAsync({ self._sound }, realCallback)
+
+	return self
 end
 
 --[=[
@@ -330,7 +372,7 @@ end
 	Cleans up the Instance.
 ]=]
 function SoundEntity.Cleanup(self: SoundEntity)
-	self._cleaner:Clean()
+	self._sound:Destroy() --trove is attached
 end
 
 ------------------------------------------------------------------------------------------------------------------------

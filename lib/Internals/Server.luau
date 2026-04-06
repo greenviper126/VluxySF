@@ -17,7 +17,6 @@ local ALLOWED_SOUND_CHILDREN = {
 
 ------------------------------------------------------------------------------------------------------------------------
 
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local SoundService = game:GetService("SoundService")
 
@@ -27,7 +26,6 @@ local Properties = require(utility.Properties)
 local Ratelimit = require(utility.RateLimit)
 local RemoteFunction = require(utility.RemoteFunction)
 
-local SoundEntity = require(ReplicatedStorage.VluxySF.SoundEntity)
 local Types = require(script.Parent.Parent.Types)
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -133,6 +131,8 @@ local function createSoundDefinitions(soundFolder: Configuration)
 	end
 
 	soundSchema.SoundDefinitions = soundDefinitions
+
+	soundFolder:Destroy() --destroy folder after converting sounds to definitions to save memory
 end
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -183,9 +183,6 @@ function ServerData._initServer(soundFolder: Configuration | Folder)
 	end
 
 	initializeServerSoundSystem(soundFolder :: Configuration)
-
-	-- class for manipulating sounds
-	SoundEntity._injectSoundSchema(soundSchema)
 end
 
 --[[

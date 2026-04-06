@@ -2,14 +2,12 @@
 
 ------------------------------------------------------------------------------------------------------------------------
 
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local utility = script.Parent.Parent.Utility
 
 local RemoteFunction = require(utility.RemoteFunction)
 
-local SoundEntity = require(ReplicatedStorage.VluxySF.SoundEntity)
 local Types = require(script.Parent.Parent.Types)
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -58,9 +56,6 @@ function ClientData._initClient()
 	end
 
 	soundSchema = getDataForClient()
-
-	-- class for manipulating sounds
-	SoundEntity._injectSoundSchema(soundSchema)
 end
 
 --[[

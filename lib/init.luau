@@ -12,10 +12,11 @@ local utility = script.Utility
 local internals = script.Internals
 
 local Properties = require(utility.Properties)
+local Tables = require(script.Utility.Tables)
 local Trove = require(utility.Trove)
-local Types = require(script.Types)
 
 local SoundEntity = require(script.SoundEntity)
+local Types = require(script.Types)
 
 ----------------------------------------------------------------------------------------------------------------
 
@@ -129,7 +130,12 @@ function Sounds._initServer(soundFolder: Configuration | Folder)
 	local Server = require(internals.Server)
 	Server._initServer(soundFolder)
 
+	--fetch
 	soundSchema = Server.GetSoundSchema()
+	Tables.DeepFreeze(soundSchema)
+
+	-- class for manipulating sounds
+	SoundEntity._injectSoundSchema(soundSchema)
 end
 
 --[=[
@@ -145,7 +151,12 @@ function Sounds._initClient()
 	local Client = require(internals.Client)
 	Client._initClient()
 
+	--fetch
 	soundSchema = Client.GetSoundSchema()
+	Tables.DeepFreeze(soundSchema)
+
+	-- class for manipulating sounds
+	SoundEntity._injectSoundSchema(soundSchema)
 end
 
 --[=[
@@ -155,8 +166,8 @@ end
 
 	Returns all serialized sound data.
 ]=]
-function Sounds.SoundDefinitions(): SoundDefinitions
-	return soundSchema.SoundDefinitions -- this needs to be deep frozen or cloned
+function Sounds.GetSoundDefinitions(): SoundDefinitions
+	return soundSchema.SoundDefinitions
 end
 
 --[=[
@@ -166,7 +177,7 @@ end
 
 	Returns all sound names.
 ]=]
-function Sounds.AllSoundNames(): { string }
+function Sounds.GetSoundNames(): { string }
 	local names = {}
 
 	for name, _ in pairs(soundSchema.SoundDefinitions) do
@@ -185,28 +196,42 @@ end
 
 	Finds a sound group by name.
 ]=]
-function Sounds.FindSoundGroup(name: string): SoundGroup?
+function Sounds.GetSoundGroup(name: string): SoundGroup?
 	return soundSchema.SoundGroups[name]
 end
 
 --[=[
 	@within VluxySF
 
-	@return { [string]: SoundGroup } -- Read-only map of sound groups
+	@return SoundGroups -- All sound groups
 
 	Returns all sound groups.
-	
-	Read-only table; the instances themselves remain mutable.
 ]=]
-function Sounds.GetSoundGroup(): SoundGroups
-	local cloneOfSoundGroups = table.clone(soundSchema.SoundGroups)
-	return table.freeze(cloneOfSoundGroups)
+function Sounds.GetSoundGroups(): Types.SoundGroups
+	return soundSchema.SoundGroups
 end
 
 --[=[
 	@within VluxySF
 
-	@param sound string | SoundDefinition -- The name of the sound to create or a sound definition to create from
+	@return { string } -- All registered sound group names
+
+	Returns all sound group names.
+]=]
+function Sounds.GetSoundGroupNames(): { string }
+	local names = {}
+
+	for name, _ in pairs(soundSchema.SoundGroups) do
+		table.insert(names, name)
+	end
+
+	return names
+end
+
+--[=[
+	@within VluxySF
+
+	@param sound string | SoundDefinition -- The sound location or a sound definition to create from
 
 	@return SoundEntity -- A SoundEntity instance representing the created sound.
 
