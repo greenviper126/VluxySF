@@ -8,36 +8,36 @@
 It allows developers to define sounds and their properties in a structured way, supports sound groups for better organization, and includes functionality for adding variance to sound playback to make it less repetitive."><meta data-rh="true" property="og:description" content="VluxySoundFactory is a sound management system designed to simplify the process of creating, organizing, and playing sounds in Roblox.
 
 It allows developers to define sounds and their properties in a structured way, supports sound groups for better organization, and includes functionality for adding variance to sound playback to make it less repetitive."><link data-rh="true" rel="canonical" href="https://greenviper126.github.io/VluxySF/api/VluxySF"><link data-rh="true" rel="alternate" href="https://greenviper126.github.io/VluxySF/api/VluxySF" hreflang="en"><link data-rh="true" rel="alternate" href="https://greenviper126.github.io/VluxySF/api/VluxySF" hreflang="x-default"><link rel="stylesheet" href="/VluxySF/assets/css/styles.5cbed574.css">
-<script src="/VluxySF/assets/js/runtime~main.13196a4a.js" defer="defer"></script>
-<script src="/VluxySF/assets/js/main.2a2c7432.js" defer="defer"></script>
+<script src="/VluxySF/assets/js/runtime~main.fb30bd26.js" defer="defer"></script>
+<script src="/VluxySF/assets/js/main.69057763.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
 <script>!function(){function t(t){document.documentElement.setAttribute("data-theme",t)}var e=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return window.localStorage.getItem("theme")}catch(t){}}();null!==e?t(e):window.matchMedia("(prefers-color-scheme: dark)").matches?t("dark"):(window.matchMedia("(prefers-color-scheme: light)").matches,t("light"))}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><div role="region" aria-label="Skip to main content"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="navbar navbar--fixed-top"><div class="navbar__inner"><div class="navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/VluxySF/"><b class="navbar__title text--truncate">VluxySF</b></a><a class="navbar__item navbar__link" href="/VluxySF/docs/intro">Docs</a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/VluxySF/api/">API</a></div><div class="navbar__items navbar__items--right"><a href="https://discord.gg/Ebbp9UgBUD" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">Discord<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><a href="https://github.com/greenviper126/VluxySF" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" class="iconExternalLink_nPIU"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="Switch between dark and light mode (currently light mode)" aria-label="Switch between dark and light mode (currently light mode)" aria-live="polite" aria-pressed="false"><svg viewBox="0 0 24 24" width="24" height="24" class="lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" class="darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg></button></div><div class="navbarSearchContainer_Bca1"><div class="navbar__search"><span aria-label="expand searchbar" role="button" class="search-icon" tabindex="0"></span><input id="search_input_react" type="search" placeholder="Loading..." aria-label="Search" class="navbar__search-input search-bar" disabled=""></div></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="main-wrapper mainWrapper_z2l0 docPageContainer_wNNk"><div class="docPage_Dpn1"><div class="docSidebarContainer_o_re"><div class="sidebar_njMd"><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" href="/VluxySF/api/VluxySF">​Vluxy​S​F</a></li><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link" href="/VluxySF/api/SoundEntity">​Sound​Entity</a></li></ul></nav></div></div><main class="docMainContainer_HJE1"><div class="container padding-vert--lg"><div class="row"><div class="col docItemCol_MU3C"><div class="docItemContainer_Wv98"><article><div class="member_J0w1 markdown"><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_oUs_"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">On this page</button></div><header><h1 class="docTitle_mZRt" style="text-decoration:none"><span style="display:inline-block">Vluxy</span><span style="display:inline-block">S</span><span style="display:inline-block">F</span></h1><div class="luaClassTags_EipM"><span class="badge_Ba2I" style="color:#349AD5"><span class="badgeTooltip_cWXP">This item only works when running on the client.</span><span class="badgeToolTipTail_H9D_"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 337 304" fill="#349AD5" role="img" aria-label="This item only works when running on the client."><path d="M0 201h337v36H0v-36zm0 0zM0 0v188h337V0H0zM218 287h30c12 0 12 17 0 17H88c-11 0-11-17 0-17h31l10-39h79l10 39z"></path></svg> <!-- -->Client</span></span><span class="badge_Ba2I" style="color:#00CC67"><span class="badgeTooltip_cWXP">This item only works when running on the server.</span><span class="badgeToolTipTail_H9D_"><svg fill="#00CC67" xmlns="http://www.w3.org/2000/svg" version="1.1" x="0px" y="0px" viewBox="0 0 90 90" role="img" aria-label="This item only works when running on the server."><polygon points="6.125,72.421 58.544,88.523 58.544,24.372 6.125,8.269 "></polygon><polygon points="79.818,15.77 79.868,15.755 29.615,1.453 10.328,6.318 60.102,21.609 "></polygon><path d="M61.643,78.738l22.232-6.582V17.801l-22.232,6.584V78.738z M73.811,69.257c-1.174,0-2.125-1.19-2.125-2.659  c0-1.468,0.951-2.658,2.125-2.658c1.172,0,2.123,1.19,2.123,2.658C75.934,68.066,74.982,69.257,73.811,69.257z M64.898,32.121  l16.336-4.41v7.117l-16.336,4.409V32.121z M64.898,41.292l16.336-4.41v7.116l-16.336,4.409V41.292z M64.898,50.463l16.336-4.411  v7.116l-16.336,4.411V50.463z"></path><polygon points="83.875,74.893 61.643,81.477 61.643,88.547 83.875,81.963 "></polygon></svg> <!-- -->Server</span></span></div><label class="privateToggle_lmfE"><span class="privateCheckboxContainer_psRa"><input class="privateCheckboxInternal_IKP2" type="checkbox" name="checkbox"><span class="privateCheckboxControl_Ov8U"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="3" d="M4 11.91l5.37 5.37L19.79 5.59"></path></svg></span></span><span class="privateCheckboxLabel_Vmvs">Show Private</span></label><div>
 <p>VluxySoundFactory is a sound management system designed to simplify the process of creating, organizing, and playing sounds in Roblox.</p>
 <p>It allows developers to define sounds and their properties in a structured way, supports sound groups for better organization, and includes functionality for adding variance to sound playback to make it less repetitive.</p>
-</div></header><h2 class="anchor anchorWithStickyNavbar_LWe7" id="types">Types<a href="#types" class="hash-link" aria-label="Direct link to Types" title="Direct link to Types">​</a></h2><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="SoundEffectDefinition"><code style="text-decoration:none">SoundEffectDefinition</code><a href="#SoundEffectDefinition" class="hash-link" aria-label="Direct link to SoundEffectDefinition" title="Direct link to SoundEffectDefinition">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L28"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">type</code> <code>SoundEffectDefinition<!-- --> = </code> <code class="blue_P4bS">Dictionary</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">any</code><code class="op_lSLc">&gt;</code></div><div>
+</div></header><h2 class="anchor anchorWithStickyNavbar_LWe7" id="types">Types<a href="#types" class="hash-link" aria-label="Direct link to Types" title="Direct link to Types">​</a></h2><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="SoundEffectDefinition"><code style="text-decoration:none">SoundEffectDefinition</code><a href="#SoundEffectDefinition" class="hash-link" aria-label="Direct link to SoundEffectDefinition" title="Direct link to SoundEffectDefinition">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L29"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">type</code> <code>SoundEffectDefinition<!-- --> = </code> <code class="blue_P4bS">Dictionary</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">any</code><code class="op_lSLc">&gt;</code></div><div>
 <p>Defines the properties of a sound effect as a dictionary of property names and values.</p>
-</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="SoundEffectDefinitions"><code style="text-decoration:none">SoundEffectDefinitions</code><a href="#SoundEffectDefinitions" class="hash-link" aria-label="Direct link to SoundEffectDefinitions" title="Direct link to SoundEffectDefinitions">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L36"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">type</code> <code>SoundEffectDefinitions<!-- --> = </code> <code class="blue_P4bS">Dictionary</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/VluxySF/api/VluxySF#SoundEffectDefinition">SoundEffectDefinition</a></code><code class="op_lSLc">&gt;</code></div><div>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="SoundEffectDefinitions"><code style="text-decoration:none">SoundEffectDefinitions</code><a href="#SoundEffectDefinitions" class="hash-link" aria-label="Direct link to SoundEffectDefinitions" title="Direct link to SoundEffectDefinitions">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L37"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">type</code> <code>SoundEffectDefinitions<!-- --> = </code> <code class="blue_P4bS">Dictionary</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/VluxySF/api/VluxySF#SoundEffectDefinition">SoundEffectDefinition</a></code><code class="op_lSLc">&gt;</code></div><div>
 <p>Defines the sound effects of a sound as a dictionary of class names to their corresponding properties.</p>
-</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="SoundProperties"><code style="text-decoration:none">SoundProperties</code><a href="#SoundProperties" class="hash-link" aria-label="Direct link to SoundProperties" title="Direct link to SoundProperties">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L44"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">type</code> <code>SoundProperties<!-- --> = </code> <code class="blue_P4bS">Dictionary</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">any</code><code class="op_lSLc">&gt;</code></div><div>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="SoundProperties"><code style="text-decoration:none">SoundProperties</code><a href="#SoundProperties" class="hash-link" aria-label="Direct link to SoundProperties" title="Direct link to SoundProperties">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L45"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">type</code> <code>SoundProperties<!-- --> = </code> <code class="blue_P4bS">Dictionary</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">any</code><code class="op_lSLc">&gt;</code></div><div>
 <p>Defines the properties of a sound as a dictionary of property names and values.</p>
-</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="SoundDefinition"><code style="text-decoration:none">SoundDefinition</code><a href="#SoundDefinition" class="hash-link" aria-label="Direct link to SoundDefinition" title="Direct link to SoundDefinition">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L55"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">interface</code> <code>SoundDefinition<!-- --> <!-- -->{</code><div class="inset_uKQm"><div><code>Properties<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/VluxySF/api/VluxySF#SoundProperties">SoundProperties</a></code><span class="inlineDescription_G7Er">-- <span>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="SoundDefinition"><code style="text-decoration:none">SoundDefinition</code><a href="#SoundDefinition" class="hash-link" aria-label="Direct link to SoundDefinition" title="Direct link to SoundDefinition">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L56"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">interface</code> <code>SoundDefinition<!-- --> <!-- -->{</code><div class="inset_uKQm"><div><code>Properties<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/VluxySF/api/VluxySF#SoundProperties">SoundProperties</a></code><span class="inlineDescription_G7Er">-- <span>
 <p>The properties of the sound itself, such as SoundId, Volume, etc.</p>
 </span></span></div><div><code>Effects<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/VluxySF/api/VluxySF#SoundEffectDefinitions">SoundEffectDefinitions</a></code><span class="inlineDescription_G7Er">-- <span>
 <p>The sound effects of the sound, organized by class name.</p>
 </span></span></div></div><code>}</code></div><div>
 <p>Defines the properties and sound effects of a sound.</p>
-</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="SoundDefinitions"><code style="text-decoration:none">SoundDefinitions</code><a href="#SoundDefinitions" class="hash-link" aria-label="Direct link to SoundDefinitions" title="Direct link to SoundDefinitions">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L63"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">type</code> <code>SoundDefinitions<!-- --> = </code> <code class="blue_P4bS">Dictionary</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/VluxySF/api/VluxySF#SoundDefinition">SoundDefinition</a></code><code class="op_lSLc">&gt;</code></div><div>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="SoundDefinitions"><code style="text-decoration:none">SoundDefinitions</code><a href="#SoundDefinitions" class="hash-link" aria-label="Direct link to SoundDefinitions" title="Direct link to SoundDefinitions">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L64"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">type</code> <code>SoundDefinitions<!-- --> = </code> <code class="blue_P4bS">Dictionary</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/VluxySF/api/VluxySF#SoundDefinition">SoundDefinition</a></code><code class="op_lSLc">&gt;</code></div><div>
 <p>Defines the sound definitions of the system as a dictionary of sound names to their corresponding sound data.</p>
-</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="SoundGroups"><code style="text-decoration:none">SoundGroups</code><a href="#SoundGroups" class="hash-link" aria-label="Direct link to SoundGroups" title="Direct link to SoundGroups">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L71"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">type</code> <code>SoundGroups<!-- --> = </code> <code class="blue_P4bS">Dictionary</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/class/SoundGroup" target="_blank" rel="noopener noreferrer">SoundGroup<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="SoundGroups"><code style="text-decoration:none">SoundGroups</code><a href="#SoundGroups" class="hash-link" aria-label="Direct link to SoundGroups" title="Direct link to SoundGroups">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L72"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">type</code> <code>SoundGroups<!-- --> = </code> <code class="blue_P4bS">Dictionary</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/class/SoundGroup" target="_blank" rel="noopener noreferrer">SoundGroup<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
 <p>Defines the type of a sound group instance.</p>
-</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="SoundVariance"><code style="text-decoration:none">SoundVariance</code><a href="#SoundVariance" class="hash-link" aria-label="Direct link to SoundVariance" title="Direct link to SoundVariance">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L82"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">interface</code> <code>SoundVariance<!-- --> <!-- -->{</code><div class="inset_uKQm"><div><code>PlaybackSpeed<!-- -->: </code><code class="purple_ieR2">(</code><code class="purple_ieR2">)</code><code class="purple_ieR2"> → </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="SoundVariance"><code style="text-decoration:none">SoundVariance</code><a href="#SoundVariance" class="hash-link" aria-label="Direct link to SoundVariance" title="Direct link to SoundVariance">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L83"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">interface</code> <code>SoundVariance<!-- --> <!-- -->{</code><div class="inset_uKQm"><div><code>PlaybackSpeed<!-- -->: </code><code class="purple_ieR2">(</code><code class="purple_ieR2">)</code><code class="purple_ieR2"> → </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
 <p>A callback that returns a multiplier for the sound's playback speed.</p>
 </span></span></div><div><code>Volume<!-- -->: </code><code class="purple_ieR2">(</code><code class="purple_ieR2">)</code><code class="purple_ieR2"> → </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
 <p>A callback that returns a multiplier for the sound's volume.</p>
 </span></span></div></div><code>}</code></div><div>
 <p>Defines the variance for sound properties, allowing for dynamic changes to playback speed and volume.</p>
-</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="SoundSchema"><code style="text-decoration:none">SoundSchema</code><a href="#SoundSchema" class="hash-link" aria-label="Direct link to SoundSchema" title="Direct link to SoundSchema">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L95"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">interface</code> <code>SoundSchema<!-- --> <!-- -->{</code><div class="inset_uKQm"><div><code>UnattachedSounds<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/class/Configuration" target="_blank" rel="noopener noreferrer">Configuration<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><span class="inlineDescription_G7Er">-- <span>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="SoundSchema"><code style="text-decoration:none">SoundSchema</code><a href="#SoundSchema" class="hash-link" aria-label="Direct link to SoundSchema" title="Direct link to SoundSchema">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L96"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code class="purple_ieR2">interface</code> <code>SoundSchema<!-- --> <!-- -->{</code><div class="inset_uKQm"><div><code>UnattachedSounds<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/class/Configuration" target="_blank" rel="noopener noreferrer">Configuration<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><span class="inlineDescription_G7Er">-- <span>
 <p>A folder for storing unattached sounds.</p>
 </span></span></div><div><code>SoundGroupContainer<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/class/Configuration" target="_blank" rel="noopener noreferrer">Configuration<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><span class="inlineDescription_G7Er">-- <span>
 <p>A folder for storing sound groups.</p>
@@ -47,38 +47,41 @@ It allows developers to define sounds and their properties in a structured way, 
 <p>A dictionary of sound definitions, organized by sound name.</p>
 </span></span></div></div><code>}</code></div><div>
 <p>Defines the overall schema for the sound system, containing all necessary data for sound creation and management.</p>
-</div><h2 class="anchor anchorWithStickyNavbar_LWe7" id="functions">Functions<a href="#functions" class="hash-link" aria-label="Direct link to Functions" title="Direct link to Functions">​</a></h2><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="SoundDefinitions"><code style="text-decoration:none">SoundDefinitions</code><a href="#SoundDefinitions" class="hash-link" aria-label="Direct link to SoundDefinitions" title="Direct link to SoundDefinitions">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L158"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VluxySF<!-- -->.</code><code class="green_DgR4">SoundDefinitions</code><code>(</code><code>) → </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/VluxySF/api/VluxySF#SoundDefinitions">SoundDefinitions</a></code><span class="inlineDescription_G7Er">-- <span>
+</div><h2 class="anchor anchorWithStickyNavbar_LWe7" id="functions">Functions<a href="#functions" class="hash-link" aria-label="Direct link to Functions" title="Direct link to Functions">​</a></h2><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="GetSoundDefinitions"><code style="text-decoration:none">GetSoundDefinitions</code><a href="#GetSoundDefinitions" class="hash-link" aria-label="Direct link to GetSoundDefinitions" title="Direct link to GetSoundDefinitions">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L169"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VluxySF<!-- -->.</code><code class="green_DgR4">GetSoundDefinitions</code><code>(</code><code>) → </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/VluxySF/api/VluxySF#SoundDefinitions">SoundDefinitions</a></code><span class="inlineDescription_G7Er">-- <span>
 <p>All converted sound data</p>
 </span></span></div><div>
 <p>Returns all serialized sound data.</p>
-</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="AllSoundNames"><code style="text-decoration:none">AllSoundNames</code><a href="#AllSoundNames" class="hash-link" aria-label="Direct link to AllSoundNames" title="Direct link to AllSoundNames">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L169"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VluxySF<!-- -->.</code><code class="green_DgR4">AllSoundNames</code><code>(</code><code>) → </code><code class="purple_ieR2">{</code><code class="blue_P4bS">string</code><code class="purple_ieR2">}</code><span class="inlineDescription_G7Er">-- <span>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="GetSoundNames"><code style="text-decoration:none">GetSoundNames</code><a href="#GetSoundNames" class="hash-link" aria-label="Direct link to GetSoundNames" title="Direct link to GetSoundNames">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L180"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VluxySF<!-- -->.</code><code class="green_DgR4">GetSoundNames</code><code>(</code><code>) → </code><code class="purple_ieR2">{</code><code class="blue_P4bS">string</code><code class="purple_ieR2">}</code><span class="inlineDescription_G7Er">-- <span>
 <p>All registered sound names</p>
 </span></span></div><div>
 <p>Returns all sound names.</p>
-</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="FindSoundGroup"><code style="text-decoration:none">FindSoundGroup</code><a href="#FindSoundGroup" class="hash-link" aria-label="Direct link to FindSoundGroup" title="Direct link to FindSoundGroup">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L188"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VluxySF<!-- -->.</code><code class="green_DgR4">FindSoundGroup</code><code>(</code><div class="inset_uKQm"><div><code>name<!-- -->: </code><code class="blue_P4bS">string</code><span class="inlineDescription_G7Er">-- <span>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="GetSoundGroup"><code style="text-decoration:none">GetSoundGroup</code><a href="#GetSoundGroup" class="hash-link" aria-label="Direct link to GetSoundGroup" title="Direct link to GetSoundGroup">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L199"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VluxySF<!-- -->.</code><code class="green_DgR4">GetSoundGroup</code><code>(</code><div class="inset_uKQm"><div><code>name<!-- -->: </code><code class="blue_P4bS">string</code><span class="inlineDescription_G7Er">-- <span>
 <p>Name of the sound group</p>
 </span></span></div></div><code>) → </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/class/SoundGroup" target="_blank" rel="noopener noreferrer">SoundGroup?<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><span class="inlineDescription_G7Er">-- <span>
 <p>Matching sound group, if found</p>
 </span></span></div><div>
 <p>Finds a sound group by name.</p>
-</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="GetSoundGroup"><code style="text-decoration:none">GetSoundGroup</code><a href="#GetSoundGroup" class="hash-link" aria-label="Direct link to GetSoundGroup" title="Direct link to GetSoundGroup">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L201"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VluxySF<!-- -->.</code><code class="green_DgR4">GetSoundGroup</code><code>(</code><code>) → </code><code class="purple_ieR2">{</code><span><code>[</code><code class="blue_P4bS">string</code><code>]</code></span><code>: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/class/SoundGroup" target="_blank" rel="noopener noreferrer">SoundGroup<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="purple_ieR2">}</code><span class="inlineDescription_G7Er">-- <span>
-<p>Read-only map of sound groups</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="GetSoundGroups"><code style="text-decoration:none">GetSoundGroups</code><a href="#GetSoundGroups" class="hash-link" aria-label="Direct link to GetSoundGroups" title="Direct link to GetSoundGroups">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L210"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VluxySF<!-- -->.</code><code class="green_DgR4">GetSoundGroups</code><code>(</code><code>) → </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/VluxySF/api/VluxySF#SoundGroups">SoundGroups</a></code><span class="inlineDescription_G7Er">-- <span>
+<p>All sound groups</p>
 </span></span></div><div>
 <p>Returns all sound groups.</p>
-<p>Read-only table; the instances themselves remain mutable.</p>
-</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="Create"><code style="text-decoration:none">Create</code><a href="#Create" class="hash-link" aria-label="Direct link to Create" title="Direct link to Create">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L215"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VluxySF<!-- -->.</code><code class="green_DgR4">Create</code><code>(</code><div class="inset_uKQm"><div><code>sound<!-- -->: </code><code class="blue_P4bS">string</code><code class="op_lSLc"> | </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/VluxySF/api/VluxySF#SoundDefinition">SoundDefinition</a></code><span class="inlineDescription_G7Er">-- <span>
-<p>The name of the sound to create or a sound definition to create from</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="GetSoundGroupNames"><code style="text-decoration:none">GetSoundGroupNames</code><a href="#GetSoundGroupNames" class="hash-link" aria-label="Direct link to GetSoundGroupNames" title="Direct link to GetSoundGroupNames">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L221"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VluxySF<!-- -->.</code><code class="green_DgR4">GetSoundGroupNames</code><code>(</code><code>) → </code><code class="purple_ieR2">{</code><code class="blue_P4bS">string</code><code class="purple_ieR2">}</code><span class="inlineDescription_G7Er">-- <span>
+<p>All registered sound group names</p>
+</span></span></div><div>
+<p>Returns all sound group names.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="Create"><code style="text-decoration:none">Create</code><a href="#Create" class="hash-link" aria-label="Direct link to Create" title="Direct link to Create">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L240"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VluxySF<!-- -->.</code><code class="green_DgR4">Create</code><code>(</code><div class="inset_uKQm"><div><code>sound<!-- -->: </code><code class="blue_P4bS">string</code><code class="op_lSLc"> | </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/VluxySF/api/VluxySF#SoundDefinition">SoundDefinition</a></code><span class="inlineDescription_G7Er">-- <span>
+<p>The sound location or a sound definition to create from</p>
 </span></span></div></div><code>) → </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/VluxySF/api/SoundEntity">SoundEntity</a></code><span class="inlineDescription_G7Er">-- <span>
 <p>A SoundEntity instance representing the created sound.</p>
 </span></span></div><div>
 <p>Creates a SoundEntity instance from a sound name or definition. If a name is provided, it looks up the corresponding sound definition and creates the sound accordingly.</p>
-</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="CreateSound"><code style="text-decoration:none">CreateSound</code><a href="#CreateSound" class="hash-link" aria-label="Direct link to CreateSound" title="Direct link to CreateSound">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L228"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VluxySF<!-- -->.</code><code class="green_DgR4">CreateSound</code><code>(</code><div class="inset_uKQm"><div><code>soundDefinition<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/VluxySF/api/VluxySF#SoundDefinition">SoundDefinition</a></code><span class="inlineDescription_G7Er">-- <span>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="CreateSound"><code style="text-decoration:none">CreateSound</code><a href="#CreateSound" class="hash-link" aria-label="Direct link to CreateSound" title="Direct link to CreateSound">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L253"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VluxySF<!-- -->.</code><code class="green_DgR4">CreateSound</code><code>(</code><div class="inset_uKQm"><div><code>soundDefinition<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/VluxySF/api/VluxySF#SoundDefinition">SoundDefinition</a></code><span class="inlineDescription_G7Er">-- <span>
 <p>Serialized sound data to materialize</p>
 </span></span></div></div><code>) → </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/class/Sound" target="_blank" rel="noopener noreferrer">Sound<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><span class="inlineDescription_G7Er">-- <span>
 <p>Newly created sound instance</p>
 </span></span></div><div>
 <p>Converts serialized sound data into a playable <code>Sound</code> instance.</p>
-</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="FindSoundByName"><code style="text-decoration:none">FindSoundByName</code><a href="#FindSoundByName" class="hash-link" aria-label="Direct link to FindSoundByName" title="Direct link to FindSoundByName">​</a></h3><span class="badge_Ba2I" style="color:#f1c40f"><span class="badgeTooltip_cWXP">This is a yielding function. When called, it will pause the Lua thread that called the function until a result is ready to be returned, without interrupting other scripts.</span><span class="badgeToolTipTail_H9D_"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="#f1c40f" role="img" aria-label="This is a yielding function. When called, it will pause the Lua thread that called the function until a result is ready to be returned, without interrupting other scripts."><path d="M96.4 11.9c-1.4-2.5-4-4-6.9-4H10.8c-2.9 0-5.4 1.5-6.9 4-1.4 2.5-1.4 5.5 0 7.9L43.3 88c1.4 2.5 4 4 6.9 4 2.9 0 5.4-1.5 6.9-4l39.3-68.2c1.4-2.4 1.4-5.4 0-7.9zM46.3 54.5c1.1-1.1 2.3-1.6 3.8-1.6s2.8.5 3.8 1.6c1.1 1.1 1.6 2.3 1.6 3.8s-.5 2.8-1.6 3.8c-1.1 1.1-2.3 1.6-3.8 1.6s-2.8-.5-3.8-1.6c-1.1-1.1-1.6-2.3-1.6-3.8.1-1.5.6-2.8 1.6-3.8zm-.5-4.9V21.8h8.8v27.8h-8.8z"></path></svg> <!-- -->Yields</span></span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L274"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VluxySF<!-- -->.</code><code class="green_DgR4">FindSoundByName</code><code>(</code><div class="inset_uKQm"><div><code>name<!-- -->: </code><code class="blue_P4bS">string</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="FindSoundByName"><code style="text-decoration:none">FindSoundByName</code><a href="#FindSoundByName" class="hash-link" aria-label="Direct link to FindSoundByName" title="Direct link to FindSoundByName">​</a></h3><span class="badge_Ba2I" style="color:#f1c40f"><span class="badgeTooltip_cWXP">This is a yielding function. When called, it will pause the Lua thread that called the function until a result is ready to be returned, without interrupting other scripts.</span><span class="badgeToolTipTail_H9D_"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="#f1c40f" role="img" aria-label="This is a yielding function. When called, it will pause the Lua thread that called the function until a result is ready to be returned, without interrupting other scripts."><path d="M96.4 11.9c-1.4-2.5-4-4-6.9-4H10.8c-2.9 0-5.4 1.5-6.9 4-1.4 2.5-1.4 5.5 0 7.9L43.3 88c1.4 2.5 4 4 6.9 4 2.9 0 5.4-1.5 6.9-4l39.3-68.2c1.4-2.4 1.4-5.4 0-7.9zM46.3 54.5c1.1-1.1 2.3-1.6 3.8-1.6s2.8.5 3.8 1.6c1.1 1.1 1.6 2.3 1.6 3.8s-.5 2.8-1.6 3.8c-1.1 1.1-2.3 1.6-3.8 1.6s-2.8-.5-3.8-1.6c-1.1-1.1-1.6-2.3-1.6-3.8.1-1.5.6-2.8 1.6-3.8zm-.5-4.9V21.8h8.8v27.8h-8.8z"></path></svg> <!-- -->Yields</span></span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L299"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VluxySF<!-- -->.</code><code class="green_DgR4">FindSoundByName</code><code>(</code><div class="inset_uKQm"><div><code>name<!-- -->: </code><code class="blue_P4bS">string</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
 <p>Name of the sound to find</p>
 </span></span></div><div><code>variance<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/VluxySF/api/VluxySF#SoundVariance">SoundVariance?</a></code><code>,</code><span class="inlineDescription_G7Er">-- <span>
 <p>Optional variance callbacks</p>
@@ -88,13 +91,13 @@ It allows developers to define sounds and their properties in a structured way, 
 <p>Created sound, if found</p>
 </span></span></div><div>
 <p>Finds a sound by name and materializes it as an instance.</p>
-</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="GetEstimatedPlayLength"><code style="text-decoration:none">GetEstimatedPlayLength</code><a href="#GetEstimatedPlayLength" class="hash-link" aria-label="Direct link to GetEstimatedPlayLength" title="Direct link to GetEstimatedPlayLength">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L314"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VluxySF<!-- -->.</code><code class="green_DgR4">GetEstimatedPlayLength</code><code>(</code><div class="inset_uKQm"><div><code>sound<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/class/Sound" target="_blank" rel="noopener noreferrer">Sound<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><span class="inlineDescription_G7Er">-- <span>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="GetEstimatedPlayLength"><code style="text-decoration:none">GetEstimatedPlayLength</code><a href="#GetEstimatedPlayLength" class="hash-link" aria-label="Direct link to GetEstimatedPlayLength" title="Direct link to GetEstimatedPlayLength">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L339"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VluxySF<!-- -->.</code><code class="green_DgR4">GetEstimatedPlayLength</code><code>(</code><div class="inset_uKQm"><div><code>sound<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/class/Sound" target="_blank" rel="noopener noreferrer">Sound<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><span class="inlineDescription_G7Er">-- <span>
 <p>Sound instance to inspect</p>
 </span></span></div></div><code>) → </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
 <p>Estimated remaining playback time in seconds</p>
 </span></span></div><div>
 <p>Returns the most accurate remaining playtime estimate.</p>
-</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="PlaySoundByName"><code style="text-decoration:none">PlaySoundByName</code><a href="#PlaySoundByName" class="hash-link" aria-label="Direct link to PlaySoundByName" title="Direct link to PlaySoundByName">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L354"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VluxySF<!-- -->.</code><code class="green_DgR4">PlaySoundByName</code><code>(</code><div class="inset_uKQm"><div><code>name<!-- -->: </code><code class="blue_P4bS">string</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="PlaySoundByName"><code style="text-decoration:none">PlaySoundByName</code><a href="#PlaySoundByName" class="hash-link" aria-label="Direct link to PlaySoundByName" title="Direct link to PlaySoundByName">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L379"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VluxySF<!-- -->.</code><code class="green_DgR4">PlaySoundByName</code><code>(</code><div class="inset_uKQm"><div><code>name<!-- -->: </code><code class="blue_P4bS">string</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
 <p>Name of the sound to play</p>
 </span></span></div><div><code>variance<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/VluxySF/api/VluxySF#SoundVariance">SoundVariance?</a></code><code>,</code><span class="inlineDescription_G7Er">-- <span>
 <p>Optional variance callbacks</p>
@@ -102,7 +105,7 @@ It allows developers to define sounds and their properties in a structured way, 
 <p>Optional parent for playback</p>
 </span></span></div></div><code>) → </code><code>(</code><code>)</code></div><div>
 <p>Plays a sound by name and destroys it after playback starts.</p>
-</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="Variance"><code style="text-decoration:none">Variance</code><a href="#Variance" class="hash-link" aria-label="Direct link to Variance" title="Direct link to Variance">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L393"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VluxySF<!-- -->.</code><code class="green_DgR4">Variance</code><code>(</code><div class="inset_uKQm"><div><code>minSpeed<!-- -->: </code><code class="blue_P4bS">number?</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorWithStickyNavbar_LWe7" id="Variance"><code style="text-decoration:none">Variance</code><a href="#Variance" class="hash-link" aria-label="Direct link to Variance" title="Direct link to Variance">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/greenviper126/VluxySF/blob/master/lib/init.luau#L418"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VluxySF<!-- -->.</code><code class="green_DgR4">Variance</code><code>(</code><div class="inset_uKQm"><div><code>minSpeed<!-- -->: </code><code class="blue_P4bS">number?</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
 <p>Minimum playback speed multiplier (default: 0.95)</p>
 </span></span></div><div><code>maxSpeed<!-- -->: </code><code class="blue_P4bS">number?</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
 <p>Maximum playback speed multiplier (default: 1.05)</p>
@@ -133,7 +136,7 @@ It allows developers to define sounds and their properties in a structured way, 
             ],
             &quot;private&quot;: true,
             &quot;source&quot;: {
-                &quot;line&quot;: 128,
+                &quot;line&quot;: 129,
                 &quot;path&quot;: &quot;lib/init.luau&quot;
             }
         },
@@ -148,12 +151,12 @@ It allows developers to define sounds and their properties in a structured way, 
             ],
             &quot;private&quot;: true,
             &quot;source&quot;: {
-                &quot;line&quot;: 144,
+                &quot;line&quot;: 150,
                 &quot;path&quot;: &quot;lib/init.luau&quot;
             }
         },
         {
-            &quot;name&quot;: &quot;SoundDefinitions&quot;,
+            &quot;name&quot;: &quot;GetSoundDefinitions&quot;,
             &quot;desc&quot;: &quot;Returns all serialized sound data.&quot;,
             &quot;params&quot;: [],
             &quot;returns&quot;: [
@@ -164,12 +167,12 @@ It allows developers to define sounds and their properties in a structured way, 
             ],
             &quot;function_type&quot;: &quot;static&quot;,
             &quot;source&quot;: {
-                &quot;line&quot;: 158,
+                &quot;line&quot;: 169,
                 &quot;path&quot;: &quot;lib/init.luau&quot;
             }
         },
         {
-            &quot;name&quot;: &quot;AllSoundNames&quot;,
+            &quot;name&quot;: &quot;GetSoundNames&quot;,
             &quot;desc&quot;: &quot;Returns all sound names.&quot;,
             &quot;params&quot;: [],
             &quot;returns&quot;: [
@@ -180,12 +183,12 @@ It allows developers to define sounds and their properties in a structured way, 
             ],
             &quot;function_type&quot;: &quot;static&quot;,
             &quot;source&quot;: {
-                &quot;line&quot;: 169,
+                &quot;line&quot;: 180,
                 &quot;path&quot;: &quot;lib/init.luau&quot;
             }
         },
         {
-            &quot;name&quot;: &quot;FindSoundGroup&quot;,
+            &quot;name&quot;: &quot;GetSoundGroup&quot;,
             &quot;desc&quot;: &quot;Finds a sound group by name.&quot;,
             &quot;params&quot;: [
                 {
@@ -202,23 +205,39 @@ It allows developers to define sounds and their properties in a structured way, 
             ],
             &quot;function_type&quot;: &quot;static&quot;,
             &quot;source&quot;: {
-                &quot;line&quot;: 188,
+                &quot;line&quot;: 199,
                 &quot;path&quot;: &quot;lib/init.luau&quot;
             }
         },
         {
-            &quot;name&quot;: &quot;GetSoundGroup&quot;,
-            &quot;desc&quot;: &quot;Returns all sound groups.\n\nRead-only table; the instances themselves remain mutable.&quot;,
+            &quot;name&quot;: &quot;GetSoundGroups&quot;,
+            &quot;desc&quot;: &quot;Returns all sound groups.&quot;,
             &quot;params&quot;: [],
             &quot;returns&quot;: [
                 {
-                    &quot;desc&quot;: &quot;Read-only map of sound groups&quot;,
-                    &quot;lua_type&quot;: &quot;{ [string]: SoundGroup }&quot;
+                    &quot;desc&quot;: &quot;All sound groups&quot;,
+                    &quot;lua_type&quot;: &quot;SoundGroups&quot;
                 }
             ],
             &quot;function_type&quot;: &quot;static&quot;,
             &quot;source&quot;: {
-                &quot;line&quot;: 201,
+                &quot;line&quot;: 210,
+                &quot;path&quot;: &quot;lib/init.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;GetSoundGroupNames&quot;,
+            &quot;desc&quot;: &quot;Returns all sound group names.&quot;,
+            &quot;params&quot;: [],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;All registered sound group names&quot;,
+                    &quot;lua_type&quot;: &quot;{ string }&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;static&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 221,
                 &quot;path&quot;: &quot;lib/init.luau&quot;
             }
         },
@@ -228,7 +247,7 @@ It allows developers to define sounds and their properties in a structured way, 
             &quot;params&quot;: [
                 {
                     &quot;name&quot;: &quot;sound&quot;,
-                    &quot;desc&quot;: &quot;The name of the sound to create or a sound definition to create from&quot;,
+                    &quot;desc&quot;: &quot;The sound location or a sound definition to create from&quot;,
                     &quot;lua_type&quot;: &quot;string | SoundDefinition&quot;
                 }
             ],
@@ -240,7 +259,7 @@ It allows developers to define sounds and their properties in a structured way, 
             ],
             &quot;function_type&quot;: &quot;static&quot;,
             &quot;source&quot;: {
-                &quot;line&quot;: 215,
+                &quot;line&quot;: 240,
                 &quot;path&quot;: &quot;lib/init.luau&quot;
             }
         },
@@ -262,7 +281,7 @@ It allows developers to define sounds and their properties in a structured way, 
             ],
             &quot;function_type&quot;: &quot;static&quot;,
             &quot;source&quot;: {
-                &quot;line&quot;: 228,
+                &quot;line&quot;: 253,
                 &quot;path&quot;: &quot;lib/init.luau&quot;
             }
         },
@@ -295,7 +314,7 @@ It allows developers to define sounds and their properties in a structured way, 
             &quot;function_type&quot;: &quot;static&quot;,
             &quot;yields&quot;: true,
             &quot;source&quot;: {
-                &quot;line&quot;: 274,
+                &quot;line&quot;: 299,
                 &quot;path&quot;: &quot;lib/init.luau&quot;
             }
         },
@@ -317,7 +336,7 @@ It allows developers to define sounds and their properties in a structured way, 
             ],
             &quot;function_type&quot;: &quot;static&quot;,
             &quot;source&quot;: {
-                &quot;line&quot;: 314,
+                &quot;line&quot;: 339,
                 &quot;path&quot;: &quot;lib/init.luau&quot;
             }
         },
@@ -344,7 +363,7 @@ It allows developers to define sounds and their properties in a structured way, 
             &quot;returns&quot;: [],
             &quot;function_type&quot;: &quot;static&quot;,
             &quot;source&quot;: {
-                &quot;line&quot;: 354,
+                &quot;line&quot;: 379,
                 &quot;path&quot;: &quot;lib/init.luau&quot;
             }
         },
@@ -381,7 +400,7 @@ It allows developers to define sounds and their properties in a structured way, 
             ],
             &quot;function_type&quot;: &quot;static&quot;,
             &quot;source&quot;: {
-                &quot;line&quot;: 393,
+                &quot;line&quot;: 418,
                 &quot;path&quot;: &quot;lib/init.luau&quot;
             }
         }
@@ -393,7 +412,7 @@ It allows developers to define sounds and their properties in a structured way, 
             &quot;desc&quot;: &quot;Defines the properties of a sound effect as a dictionary of property names and values.&quot;,
             &quot;lua_type&quot;: &quot;Dictionary&lt;any&gt;&quot;,
             &quot;source&quot;: {
-                &quot;line&quot;: 28,
+                &quot;line&quot;: 29,
                 &quot;path&quot;: &quot;lib/init.luau&quot;
             }
         },
@@ -402,7 +421,7 @@ It allows developers to define sounds and their properties in a structured way, 
             &quot;desc&quot;: &quot;Defines the sound effects of a sound as a dictionary of class names to their corresponding properties.&quot;,
             &quot;lua_type&quot;: &quot;Dictionary&lt;SoundEffectDefinition&gt;&quot;,
             &quot;source&quot;: {
-                &quot;line&quot;: 36,
+                &quot;line&quot;: 37,
                 &quot;path&quot;: &quot;lib/init.luau&quot;
             }
         },
@@ -411,7 +430,7 @@ It allows developers to define sounds and their properties in a structured way, 
             &quot;desc&quot;: &quot;Defines the properties of a sound as a dictionary of property names and values.&quot;,
             &quot;lua_type&quot;: &quot;Dictionary&lt;any&gt;&quot;,
             &quot;source&quot;: {
-                &quot;line&quot;: 44,
+                &quot;line&quot;: 45,
                 &quot;path&quot;: &quot;lib/init.luau&quot;
             }
         },
@@ -431,7 +450,7 @@ It allows developers to define sounds and their properties in a structured way, 
                 }
             ],
             &quot;source&quot;: {
-                &quot;line&quot;: 55,
+                &quot;line&quot;: 56,
                 &quot;path&quot;: &quot;lib/init.luau&quot;
             }
         },
@@ -440,7 +459,7 @@ It allows developers to define sounds and their properties in a structured way, 
             &quot;desc&quot;: &quot;Defines the sound definitions of the system as a dictionary of sound names to their corresponding sound data.&quot;,
             &quot;lua_type&quot;: &quot;Dictionary&lt;SoundDefinition&gt;&quot;,
             &quot;source&quot;: {
-                &quot;line&quot;: 63,
+                &quot;line&quot;: 64,
                 &quot;path&quot;: &quot;lib/init.luau&quot;
             }
         },
@@ -449,7 +468,7 @@ It allows developers to define sounds and their properties in a structured way, 
             &quot;desc&quot;: &quot;Defines the type of a sound group instance.&quot;,
             &quot;lua_type&quot;: &quot;Dictionary&lt;SoundGroup&gt;&quot;,
             &quot;source&quot;: {
-                &quot;line&quot;: 71,
+                &quot;line&quot;: 72,
                 &quot;path&quot;: &quot;lib/init.luau&quot;
             }
         },
@@ -469,7 +488,7 @@ It allows developers to define sounds and their properties in a structured way, 
                 }
             ],
             &quot;source&quot;: {
-                &quot;line&quot;: 82,
+                &quot;line&quot;: 83,
                 &quot;path&quot;: &quot;lib/init.luau&quot;
             }
         },
@@ -499,7 +518,7 @@ It allows developers to define sounds and their properties in a structured way, 
                 }
             ],
             &quot;source&quot;: {
-                &quot;line&quot;: 95,
+                &quot;line&quot;: 96,
                 &quot;path&quot;: &quot;lib/init.luau&quot;
             }
         }
@@ -511,9 +530,9 @@ It allows developers to define sounds and their properties in a structured way, 
         &quot;Server&quot;
     ],
     &quot;source&quot;: {
-        &quot;line&quot;: 115,
+        &quot;line&quot;: 116,
         &quot;path&quot;: &quot;lib/init.luau&quot;
     }
-}</pre></details></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#types" class="table-of-contents__link toc-highlight">Types</a><ul><li><a href="#SoundDefinition" class="table-of-contents__link toc-highlight">SoundDefinition</a></li><li><a href="#SoundDefinitions" class="table-of-contents__link toc-highlight">SoundDefinitions</a></li><li><a href="#SoundEffectDefinition" class="table-of-contents__link toc-highlight">SoundEffectDefinition</a></li><li><a href="#SoundEffectDefinitions" class="table-of-contents__link toc-highlight">SoundEffectDefinitions</a></li><li><a href="#SoundGroups" class="table-of-contents__link toc-highlight">SoundGroups</a></li><li><a href="#SoundProperties" class="table-of-contents__link toc-highlight">SoundProperties</a></li><li><a href="#SoundSchema" class="table-of-contents__link toc-highlight">SoundSchema</a></li><li><a href="#SoundVariance" class="table-of-contents__link toc-highlight">SoundVariance</a></li></ul></li><li><a href="#functions" class="table-of-contents__link toc-highlight">Functions</a><ul><li><a href="#AllSoundNames" class="table-of-contents__link toc-highlight">.AllSoundNames</a></li><li><a href="#Create" class="table-of-contents__link toc-highlight">.Create</a></li><li><a href="#CreateSound" class="table-of-contents__link toc-highlight">.CreateSound</a></li><li><a href="#FindSoundByName" class="table-of-contents__link toc-highlight">.FindSoundByName</a></li><li><a href="#FindSoundGroup" class="table-of-contents__link toc-highlight">.FindSoundGroup</a></li><li><a href="#GetEstimatedPlayLength" class="table-of-contents__link toc-highlight">.GetEstimatedPlayLength</a></li><li><a href="#GetSoundGroup" class="table-of-contents__link toc-highlight">.GetSoundGroup</a></li><li><a href="#PlaySoundByName" class="table-of-contents__link toc-highlight">.PlaySoundByName</a></li><li><a href="#SoundDefinitions" class="table-of-contents__link toc-highlight">.SoundDefinitions</a></li><li><a href="#Variance" class="table-of-contents__link toc-highlight">.Variance</a></li></ul></li></ul></div></div></div></div></main></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 VluxEntertainment(Partnership). Built with Moonwave and Docusaurus.</div></div></div></footer></div>
+}</pre></details></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#types" class="table-of-contents__link toc-highlight">Types</a><ul><li><a href="#SoundDefinition" class="table-of-contents__link toc-highlight">SoundDefinition</a></li><li><a href="#SoundDefinitions" class="table-of-contents__link toc-highlight">SoundDefinitions</a></li><li><a href="#SoundEffectDefinition" class="table-of-contents__link toc-highlight">SoundEffectDefinition</a></li><li><a href="#SoundEffectDefinitions" class="table-of-contents__link toc-highlight">SoundEffectDefinitions</a></li><li><a href="#SoundGroups" class="table-of-contents__link toc-highlight">SoundGroups</a></li><li><a href="#SoundProperties" class="table-of-contents__link toc-highlight">SoundProperties</a></li><li><a href="#SoundSchema" class="table-of-contents__link toc-highlight">SoundSchema</a></li><li><a href="#SoundVariance" class="table-of-contents__link toc-highlight">SoundVariance</a></li></ul></li><li><a href="#functions" class="table-of-contents__link toc-highlight">Functions</a><ul><li><a href="#Create" class="table-of-contents__link toc-highlight">.Create</a></li><li><a href="#CreateSound" class="table-of-contents__link toc-highlight">.CreateSound</a></li><li><a href="#FindSoundByName" class="table-of-contents__link toc-highlight">.FindSoundByName</a></li><li><a href="#GetEstimatedPlayLength" class="table-of-contents__link toc-highlight">.GetEstimatedPlayLength</a></li><li><a href="#GetSoundDefinitions" class="table-of-contents__link toc-highlight">.GetSoundDefinitions</a></li><li><a href="#GetSoundGroup" class="table-of-contents__link toc-highlight">.GetSoundGroup</a></li><li><a href="#GetSoundGroupNames" class="table-of-contents__link toc-highlight">.GetSoundGroupNames</a></li><li><a href="#GetSoundGroups" class="table-of-contents__link toc-highlight">.GetSoundGroups</a></li><li><a href="#GetSoundNames" class="table-of-contents__link toc-highlight">.GetSoundNames</a></li><li><a href="#PlaySoundByName" class="table-of-contents__link toc-highlight">.PlaySoundByName</a></li><li><a href="#Variance" class="table-of-contents__link toc-highlight">.Variance</a></li></ul></li></ul></div></div></div></div></main></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 VluxEntertainment(Partnership). Built with Moonwave and Docusaurus.</div></div></div></footer></div>
 </body>
 </html>
