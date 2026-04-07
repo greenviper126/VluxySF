@@ -93,6 +93,7 @@ function SoundTools.CreateSound(soundSchema: Types.SoundSchema, soundDefinition:
 			newClass.Parent = newSound
 		end)
 	end
+	newSound.Parent = soundSchema.UnattachedSounds
 
 	return newSound
 end

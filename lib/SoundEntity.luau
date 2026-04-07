@@ -98,17 +98,30 @@ end
 	@method Clone
 	@within SoundEntity
 
-	@return SoundEntity -- A new SoundEntity instance with the same properties and effects as the original, but with a new underlying Sound instance.
+	@return SoundEntity -- A new SoundEntity instance with the same properties and effects as the original.
 
 	Creates a clone of the SoundEntity, allowing you to create multiple instances of the same sound definition without modifying the original.
 ]=]
-function SoundEntity.Clone(self: SoundEntity)
-	local clonedSoundDefinition = SoundTools.CreateSoundDefinition(self._sound)
-	clonedSoundDefinition.Properties.Playing = false
-	clonedSoundDefinition.Properties.isPlaying = false
-	clonedSoundDefinition.Properties.IsPlaying = false
+function SoundEntity.Clone(self: SoundEntity): SoundEntity
+	return SoundEntity.new(self._soundDefinition)
+end
 
-	return SoundEntity.new(clonedSoundDefinition)
+--[=[
+	@method Extend
+	@within SoundEntity
+
+	@return SoundEntity -- A new SoundEntity instance with the same properties and effects as the original.
+
+	Makes a clone that is connected to the original SoundEntity. If the original is cleaned up so is this instance.
+]=]
+function SoundEntity.Extend(self: SoundEntity): SoundEntity
+	local clone = self:Clone()
+
+	self._cleaner:Add(function()
+		clone:Cleanup()
+	end)
+
+	return clone
 end
 
 --[=[
@@ -164,7 +177,7 @@ end
 
 	Fades the sound's volume to the specified level over time using a tween. If a fade is already in progress, it will be cleaned up before starting the new fade.
 ]=]
-function SoundEntity.FadeTo(self: SoundEntity, volume: number, tweenInfo: TweenInfo): SoundEntity
+function SoundEntity.FadeToRaw(self: SoundEntity, volume: number, tweenInfo: TweenInfo): SoundEntity
 	volume = math.clamp(volume, 0, 10)
 
 	self:FadeStop()
@@ -193,6 +206,32 @@ function SoundEntity.FadeTo(self: SoundEntity, volume: number, tweenInfo: TweenI
 end
 
 --[=[
+	@method FadeTo
+	@within SoundEntity
+
+	@param volume number -- The target volume to fade to.
+	@param time number? -- The duration of the fade in seconds. Defaults to 1 second if not provided.
+	@param style Enum.EasingStyle? -- Optional easing style for the fade. Defaults to Sine if not provided.
+	@param direction Enum.EasingDirection? -- Optional easing direction for the fade. Defaults to Out if not provided.
+
+	@return SoundEntity -- The SoundEntity instance after starting the fade.
+
+	Fades the sound's volume to the specified level over time using a tween with the given parameters. If a fade is already in progress, it will be cleaned up before starting the new fade.
+]=]
+function SoundEntity.FadeTo(
+	self: SoundEntity,
+	volume: number,
+	time: number?,
+	style: Enum.EasingStyle?,
+	direction: Enum.EasingDirection?
+): SoundEntity
+	local tweenInfo = TweenInfo.new(time or 1, style or Enum.EasingStyle.Sine, direction or Enum.EasingDirection.Out)
+	self:FadeToRaw(volume, tweenInfo)
+
+	return self
+end
+
+--[=[
 	@method FadeIn
 	@within SoundEntity
 
@@ -208,7 +247,7 @@ function SoundEntity.FadeIn(self: SoundEntity, time: number, style: Enum.EasingS
 	local tweenInfo = TweenInfo.new(time, style or Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
 
 	self._sound.Volume = 0
-	self:FadeTo(volume, tweenInfo)
+	self:FadeToRaw(volume, tweenInfo)
 
 	return self
 end
@@ -229,7 +268,7 @@ function SoundEntity.FadeOut(self: SoundEntity, time: number, style: Enum.Easing
 	local tweenInfo = TweenInfo.new(time, style or Enum.EasingStyle.Sine, Enum.EasingDirection.In)
 
 	self._sound.Volume = volume
-	self:FadeTo(0, tweenInfo)
+	self:FadeToRaw(0, tweenInfo)
 
 	return self
 end

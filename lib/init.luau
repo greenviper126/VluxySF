@@ -12,10 +12,11 @@ local utility = script.Utility
 local internals = script.Internals
 
 local Properties = require(utility.Properties)
-local Tables = require(script.Utility.Tables)
+local Tables = require(utility.Tables)
 local Trove = require(utility.Trove)
 
 local SoundEntity = require(script.SoundEntity)
+local SoundTools = require(script.SoundTools)
 local Types = require(script.Types)
 
 ----------------------------------------------------------------------------------------------------------------
@@ -173,18 +174,18 @@ end
 --[=[
 	@within VluxySF
 
-	@return { string } -- All registered sound names
+	@return { string } -- All registered sound locations
 
-	Returns all sound names.
+	Returns all sound locations.
 ]=]
-function Sounds.GetSoundNames(): { string }
-	local names = {}
+function Sounds.GetSoundLocations(): { string }
+	local locations = {}
 
-	for name, _ in pairs(soundSchema.SoundDefinitions) do
-		table.insert(names, name)
+	for location, _ in pairs(soundSchema.SoundDefinitions) do
+		table.insert(locations, location)
 	end
 
-	return names
+	return locations
 end
 
 --[=[
@@ -231,56 +232,31 @@ end
 --[=[
 	@within VluxySF
 
-	@param sound string | SoundDefinition -- The sound location or a sound definition to create from
+	@tag SoundEntity
 
-	@return SoundEntity -- A SoundEntity instance representing the created sound.
+	@param sound string | SoundDefinition -- The sound location or a sound definition to attach to.
 
-	Creates a SoundEntity instance from a sound name or definition. If a name is provided, it looks up the corresponding sound definition and creates the sound accordingly.
+	@return SoundEntity -- Constructed class
+
+	A constructor for manipulating your sounds.
 ]=]
 function Sounds.Create(sound: string | Types.SoundDefinition): SoundEntity.SoundEntity
 	return SoundEntity.new(sound)
 end
 
+------------------------------------------------------------------------------------------------------------------
+
 --[=[
 	@within VluxySF
 
-	@param soundDefinition SoundDefinition -- Serialized sound data to materialize
+	@param soundDefinition SoundDefinition -- The sound definition to construct from.
 
-	@return Sound -- Newly created sound instance
+	@return Sound -- Constructed sound instance based on the provided definition.
 
-	Converts serialized sound data into a playable `Sound` instance.
+	Constructs a sound instance from a given sound definition, applying all specified properties and effects.
 ]=]
-function Sounds.CreateSound(soundDefinition: SoundDefinition): Sound
-	local newSound = Instance.new("Sound")
-	newSound:AddTag("FrameworkSound")
-
-	if not soundSchema or not soundSchema.SoundDefinitions then
-		warn("Sounds not loaded yet!")
-
-		newSound.Name = "SoundsNotLoadedYet"
-		return newSound
-	end
-
-	for property, value in pairs(soundDefinition.Properties) do --create new sound
-		Properties.ApplyPropertyValueToInstance(newSound, property, value)
-	end
-
-	local realSoundGroup = Sounds.FindSoundGroup(soundDefinition.Properties.SoundGroup)
-	newSound.SoundGroup = realSoundGroup
-
-	for class, properties in pairs(soundDefinition.Effects) do --create new sound children
-		pcall(function()
-			local newClass = Instance.new(class)
-
-			for property, value in pairs(properties) do --create new child class
-				Properties.ApplyPropertyValueToInstance(newClass, property, value)
-			end
-
-			newClass.Parent = newSound
-		end)
-	end
-
-	return newSound
+function Sounds.ConstructSoundFromDefinition(soundDefinition: SoundDefinition): Sound
+	return SoundTools.CreateSound(soundSchema, soundDefinition)
 end
 
 --[=[
@@ -288,40 +264,25 @@ end
 
 	@yields
 
-	@param name string -- Name of the sound to find
-	@param variance SoundVariance? -- Optional variance callbacks
-	@param parent Instance? -- Optional parent for the created sound
+	@param name string -- The name of the sound definition to construct from.
 
-	@return Sound? -- Created sound, if found
+	@return Sound? -- Constructed sound instance if the definition is found, otherwise nil.
 
-	Finds a sound by name and materializes it as an instance.
+	Constructs a sound instance from a sound definition identified by its name.
 ]=]
-function Sounds.FindSoundByName(name: string, variance: SoundVariance?, parent: Instance?): Sound?
-	local soundTables = soundSchema.SoundDefinitions[name]
-
-	if not soundSchema.SoundDefinitions then
-		warn("Sound data is currently nil, cannot pull sound named " .. name)
-		return nil
-	end
-	if not soundSchema then
-		warn("Could not find sound named " .. name)
+function Sounds.ConstructSoundFromName(name: string): Sound?
+	local soundDefinition = SoundTools.FindSoundDefinition(soundSchema, name)
+	if not soundDefinition then
 		return nil
 	end
 
-	local newSound = Sounds.CreateSound(soundTables)
-	if newSound then
-		newSound.Parent = parent and parent or soundSchema.UnattachedSounds
+	local newSound = SoundTools.CreateSound(soundSchema, soundDefinition)
+	if not newSound then
+		return nil
+	end
 
-		if variance then
-			newSound.PlaybackSpeed = newSound.PlaybackSpeed * (variance.PlaybackSpeed() or 1)
-			newSound.Volume = newSound.Volume * (variance.Volume() or 1)
-		end
-
-		if not newSound.IsLoaded then
-			newSound.Loaded:Wait()
-		end
-	else
-		warn("Could not create sound named " .. name)
+	if not newSound.IsLoaded then
+		newSound.Loaded:Wait()
 	end
 
 	return newSound
@@ -330,100 +291,30 @@ end
 --[=[
 	@within VluxySF
 
-	@param sound Sound -- Sound instance to inspect
+	@param sound Sound -- The sound instance to analyze.
 
-	@return number -- Estimated remaining playback time in seconds
+	@return number -- The estimated play length of the sound, including any variations in playback speed.
 
-	Returns the most accurate remaining playtime estimate.
+	Calculates the estimated play length of a sound instance by considering its SoundId and any attached sound effects that may influence its duration.
 ]=]
 function Sounds.GetEstimatedPlayLength(sound: Sound): number
-	local padding = 0.05
-
-	if sound.Looped then
-		return math.huge
-	end
-
-	local playbackSpeed = sound.PlaybackSpeed
-	if playbackSpeed <= 0 or playbackSpeed ~= playbackSpeed then
-		return padding
-	end
-
-	local timeLength = sound.TimeLength
-	if timeLength <= 0 or timeLength ~= timeLength then
-		return padding
-	end
-
-	local timePosition = sound.TimePosition
-	if timePosition ~= timePosition then
-		timePosition = 0
-	end
-	timePosition = math.clamp(timePosition, 0, timeLength)
-
-	local remaining = (timeLength - timePosition) / playbackSpeed
-	if remaining ~= remaining then
-		return padding
-	end
-
-	return math.max(remaining + padding, padding)
+	return SoundTools.GetEstimatedPlayLength(sound)
 end
 
 --[=[
 	@within VluxySF
 
-	@param name string -- Name of the sound to play
-	@param variance SoundVariance? -- Optional variance callbacks
-	@param parent Instance? -- Optional parent for playback
+	@param min number? -- Minimum multiplier for variance (default: 0.95)
+	@param max number? -- Maximum multiplier for variance (default: 1.05)
 
-	Plays a sound by name and destroys it after playback starts.
+	@return number -- variance result
+
+	Calculates a random variance value within the specified range.
 ]=]
-function Sounds.PlaySoundByName(name: string, variance: SoundVariance?, parent: Instance?)
-	local cleaner = Trove.new()
-
-	local sound = Sounds.FindSoundByName(name, variance, parent)
-	if not sound then
-		return
+function Sounds.Variance(min: number?, max: number?): () -> number
+	return function()
+		return Random:NextNumber(min or 0.95, max or 1.05)
 	end
-	cleaner:AttachToInstance(sound)
-
-	--backup
-	local playtime = Sounds.GetEstimatedPlayLength(sound)
-	cleaner:Add(task.delay(playtime, function()
-		sound:Destroy()
-	end))
-
-	--cleanupSound after it plays
-	cleaner:Add(task.spawn(function()
-		sound:Play()
-
-		sound.Ended:Wait()
-
-		sound:Destroy()
-	end))
-
-	return cleaner
-end
-
---[=[
-	@within VluxySF
-
-	@param minSpeed number? -- Minimum playback speed multiplier (default: 0.95)
-	@param maxSpeed number? -- Maximum playback speed multiplier (default: 1.05)
-	@param minVolume number? -- Minimum volume multiplier (default: 0.95)
-	@param maxVolume number? -- Maximum volume multiplier (default: 1.05)
-
-	@return SoundVariance -- Randomized variance callbacks
-
-	Creates variance callbacks for sound playback speed and volume.
-]=]
-function Sounds.Variance(minSpeed: number?, maxSpeed: number?, minVolume: number?, maxVolume: number?): SoundVariance
-	return {
-		PlaybackSpeed = function()
-			return Random:NextNumber(minSpeed or 0.95, maxSpeed or 1.05)
-		end,
-		Volume = function()
-			return Random:NextNumber(minVolume or 0.95, maxVolume or 1.05)
-		end,
-	}
 end
 
 return Sounds

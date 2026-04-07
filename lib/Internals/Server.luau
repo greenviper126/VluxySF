@@ -1,4 +1,5 @@
 --!strict
+--!native
 
 ------------------------------------------------------------------------------------------------------------------------
 
@@ -54,7 +55,7 @@ local soundSchema: Types.SoundSchema = {
 
     @return Types.SoundEffectDefinitions - A dictionary of the sound's valid children converted into tables, organized by class name.
 ]]
-local function GetSoundEffectDefinitions(sound: Sound): Types.SoundEffectDefinitions
+local function getSoundEffectDefinitions(sound: Sound): Types.SoundEffectDefinitions
 	local children = {}
 
 	for _, child in pairs(sound:GetChildren()) do
@@ -71,22 +72,61 @@ end
 ------------------------------------------------------------------------------------------------------------------------
 
 --[[
-    Registers a sound and its effects into the sound definitions.
+	Registers a sound by converting it into a sound definition and adding it to the appropriate sound group in the sound schema.
 
-    @param soundDefinitions Types.SoundDefinitions - The sound definitions dictionary to add the sound to.
-    @param sound Sound - The sound instance to register.
-    @param childFolder Instance - The folder containing the sound for grouping purposes.
+	@param sound Sound - The sound instance to register.
+	@param soundGroup string - The name of the sound group to add the sound definition to.
+
+	@return boolean, string? - A boolean indicating success, and an optional error message if registration failed.
 ]]
-local function registerSound(soundDefinitions: Types.SoundDefinitions, sound: Sound, childFolder: Instance)
+local function registerSound(sound: Sound, soundGroup: string)
 	return pcall(function()
-		soundDefinitions[sound.Name] = { --create sound and its effects
+		local soundDefinition: Types.SoundDefinition = {
 			Properties = Properties.InstanceToProperties(sound),
-			Effects = GetSoundEffectDefinitions(sound),
+			Effects = getSoundEffectDefinitions(sound),
 		}
 
-		soundDefinitions[sound.Name].Properties.Name = sound.Name --add to sound group
-		soundDefinitions[sound.Name].Properties.SoundGroup = childFolder.Name --add to sound group
+		soundDefinition.Properties.Name = sound.Name --sugar
+		soundDefinition.Properties.SoundGroup = soundGroup --add to sound group
+
+		return soundDefinition
 	end)
+end
+
+--[[
+	Retrieves the location of a sound instance within the sound folder hierarchy as a string.
+
+	@param sound Sound - The sound instance to retrieve the location of.
+	@param baseFolder Instance - The base folder to stop backtracking at (e.g., the unattached sounds folder or a sound group folder).
+
+	@return string - The location of the sound instance within the sound folder hierarchy, formatted as "Folder/Subfolder/SoundName".
+]]
+local function getSoundLocation(sound: Sound, baseFolder: Instance): string
+	local location = ""
+	local parents = {}
+
+	--get parents
+	local function backtrack(folder: Instance)
+		table.insert(parents, folder.Name)
+
+		if folder ~= baseFolder and folder.Parent then
+			backtrack(folder.Parent)
+		end
+	end
+	backtrack(sound)
+
+	--convert to string
+	for i = #parents, 1, -1 do
+		location ..= parents[i]
+
+		if i == 1 then
+			break
+		end
+
+		location ..= "/"
+	end
+
+	return location
 end
 
 --[[
@@ -101,10 +141,14 @@ local function setGroupedSounds(soundDefinitions: Types.SoundDefinitions, childF
 			continue
 		end
 
-		local success, errorMessage = registerSound(soundDefinitions, sound, childFolder)
+		--creates a sound definition
+		local success, result = registerSound(sound, childFolder.Name)
 
-		if not success then
-			warn(errorMessage)
+		if success then
+			local soundLocation = getSoundLocation(sound, childFolder)
+			soundDefinitions[soundLocation] = result
+		else
+			warn(result)
 		end
 	end
 end
