@@ -95,6 +95,181 @@ function SoundEntity.new(sound: string | Types.SoundDefinition): SoundEntity
 end
 
 --[=[
+	@method GetRawSound
+	@within SoundEntity
+
+	@return Sound -- The raw Sound instance created by this SoundEntity.
+
+	Provides access to the underlying Sound instance for advanced manipulation or retrieval of properties.]=]
+function SoundEntity.GetRawSound(self: SoundEntity): Sound
+	return self._sound
+end
+
+--[=[
+	@method ResetToDefinition
+	@within SoundEntity
+
+	@return SoundEntity
+
+	Resets the sound instance to match the original sound definition. This is useful if you want to discard any changes made to the sound's properties or effects and return it to its default state as defined in the sound schema.
+]=]
+function SoundEntity.ResetToDefinition(self: SoundEntity): SoundEntity
+	--This should adjust the existing instances incase anything is attached. for now this does nothing!
+
+	return self
+end
+
+--[=[
+	@method Fork
+	@within SoundEntity
+
+	@param thread function(self: SoundEntity) -- The function to run in a new thread, which receives the SoundEntity instance as an argument.
+
+	@return SoundEntity
+
+	Starts a new thread to run the provided function, allowing you to perform concurrent operations on the sound while it is playing. The thread will be automatically cleaned up when the sound is cleaned up.	
+]=]
+function SoundEntity.Fork(self: SoundEntity, thread: (self: SoundEntity) -> ()): SoundEntity
+	self._cleaner:Add(task.spawn(function()
+		thread(self)
+	end))
+
+	return self
+end
+
+--[=[
+	@method Preload
+	@within SoundEntity
+
+	@yields
+
+	@param callback PreloadCallback? -- Optional callback to handle the sound successfully preloading or failing to preload.
+
+	@return SoundEntity
+
+	Preloads the sound's audio asset to reduce latency when it is first played. This applies to all future sounds with the same assetId.
+
+	Doing this increases memory usage on the client and is not reversible. Only use if needed!
+]=]
+function SoundEntity.Preload(self: SoundEntity, callback: PreloadCallback?): SoundEntity
+	local realCallback = callback
+		or function(assetId, assetFetchStatus)
+			if assetFetchStatus == Enum.AssetFetchStatus.Success then
+				return
+			end
+
+			warn(`Sound with assetId {assetId} failed to preload with status {assetFetchStatus} !`)
+		end
+
+	ContentProvider:PreloadAsync({ self._sound }, realCallback)
+
+	return self
+end
+
+--[=[
+	@method Sleep
+	@within SoundEntity
+
+	@yields
+
+	@param time number -- The amount of time in seconds to wait.
+
+	@return SoundEntity
+
+	Waits for the specified amount of time before resuming. This can be used to create delays in sound sequences or effects.
+]=]
+function SoundEntity.Sleep(self: SoundEntity, time: number): SoundEntity
+	task.wait(time)
+
+	return self
+end
+
+--[=[
+	@method Await
+	@within SoundEntity
+
+	@param timeout number? -- Optional timeout in seconds to wait before automatically cleaning up the sound. If not provided, it will wait indefinitely until the sound finishes playing.
+
+	@yields
+
+	Waits for the sound to finish playing or for the specified timeout to elapse before cleaning up the sound instance.
+]=]
+function SoundEntity.Await(self: SoundEntity, timeout: number?)
+	if not self._sound.Playing then
+		return
+	end
+
+	local cleaner = self._cleaner:Extend()
+	local waitEvent = cleaner:Add(Instance.new("BindableEvent"))
+
+	--timeout
+	cleaner:Add(task.delay(timeout or math.huge, function()
+		waitEvent:Fire()
+	end))
+
+	--if it ends before the estimated length.
+	cleaner:Connect(self._sound.Ended, function()
+		waitEvent:Fire()
+	end)
+
+	--wait
+	waitEvent.Event:Wait()
+
+	cleaner:Clean()
+end
+
+--[=[
+	@method Reset
+	@within SoundEntity
+
+	@return SoundEntity
+
+	Stops and Replays the sound from the beginning. This is useful for quickly restarting a sound without having to create a new SoundEntity instance.
+]=]
+function SoundEntity.Reset(self: SoundEntity): SoundEntity
+	self:Stop():Play()
+
+	return self
+end
+
+--[=[
+	@method PlayOnce
+	@within SoundEntity
+
+	Plays the sound and automatically cleans it up after it finishes. This is useful for one-off sound effects that don't need to be reused.
+]=]
+function SoundEntity.PlayOnce(self: SoundEntity)
+	task.spawn(function()
+		self:Play():Await()
+
+		self:Cleanup()
+	end)
+end
+
+--[=[
+	@method PlayWhenLoaded
+	@within SoundEntity
+
+	@return SoundEntity
+
+	Plays the sound when it is fully loaded.
+]=]
+function SoundEntity.PlayWhenLoaded(self: SoundEntity): SoundEntity
+	if self._sound.IsLoaded then
+		self:Play()
+		return self
+	end
+
+	self._cleaner:Add(function()
+		self._sound.Loaded:Wait()
+
+		self:Play()
+	end)
+
+	return self
+end
+
+--[=[
 	@method Clone
 	@within SoundEntity
 
@@ -125,46 +300,18 @@ function SoundEntity.Extend(self: SoundEntity): SoundEntity
 end
 
 --[=[
-	@method Preload
+	@method Cleanup
 	@within SoundEntity
 
-	@yields
-
-	@param callback PreloadCallback? -- Optional callback to handle the sound successfully preloading or failing to preload.
-
-	@return SoundEntity -- The SoundEntity instance after starting the preload.
-
-	Preloads the sound's audio asset to reduce latency when it is first played. This applies to all future sounds with the same assetId.
-
-	Doing this increases memory usage on the client and is not reversible. Only use if needed!
+	Cleans up the Instance.
 ]=]
-function SoundEntity.Preload(self: SoundEntity, callback: PreloadCallback?): SoundEntity
-	local realCallback = callback
-		or function(assetId, assetFetchStatus)
-			if assetFetchStatus == Enum.AssetFetchStatus.Success then
-				return
-			end
-
-			warn(`Sound with assetId {assetId} failed to preload with status {assetFetchStatus} !`)
-		end
-
-	ContentProvider:PreloadAsync({ self._sound }, realCallback)
-
-	return self
+function SoundEntity.Cleanup(self: SoundEntity)
+	self._sound:Destroy() --trove is attached
 end
 
---[=[
-	@method GetRawSound
-	@within SoundEntity
-
-	@return Sound -- The raw Sound instance created by this SoundEntity.
-
-	Provides access to the underlying Sound instance for advanced manipulation or retrieval of properties.]=]
-function SoundEntity.GetRawSound(self: SoundEntity): Sound
-	return self._sound
-end
-
--------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
+--[Volume Transitions]--------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------
 
 --[=[
 	@method FadeTo
@@ -175,7 +322,7 @@ end
 	@param volume number -- The target volume to fade to.
 	@param tweenInfo TweenInfo -- The TweenInfo object defining the duration and easing style of the fade.
 
-	@return SoundEntity -- The SoundEntity instance after starting the fade.
+	@return SoundEntity
 
 	Fades the sound's volume to the specified level over time using a tween. If a fade is already in progress, it will be cleaned up before starting the new fade.
 ]=]
@@ -218,7 +365,7 @@ end
 	@param style Enum.EasingStyle? -- Optional easing style for the fade. Defaults to Sine if not provided.
 	@param direction Enum.EasingDirection? -- Optional easing direction for the fade. Defaults to Out if not provided.
 
-	@return SoundEntity -- The SoundEntity instance after starting the fade.
+	@return SoundEntity
 
 	Fades the sound's volume to the specified level over time using a tween with the given parameters. If a fade is already in progress, it will be cleaned up before starting the new fade.
 ]=]
@@ -244,7 +391,7 @@ end
 	@param time number -- The duration of the fade in seconds.
 	@param style Enum.EasingStyle? -- Optional easing style for the fade. Defaults to Sine.
 
-	@return SoundEntity -- The SoundEntity instance after starting the fade in.
+	@return SoundEntity
 
 	Fades the sound's volume up from 0 to its defined volume over the specified duration using a tween. If a fade is already in progress, it will be cleaned up before starting the new fade.
 ]=]
@@ -267,7 +414,7 @@ end
 	@param time number -- The duration of the fade out in seconds.
 	@param style Enum.EasingStyle? -- Optional easing style for the fade out. Defaults to Sine.
 
-	@return SoundEntity -- The SoundEntity instance after starting the fade out.
+	@return SoundEntity
 
 	Fades the sound's volume down to 0 over the specified duration using a tween. If a fade is already in progress, it will be cleaned up before starting the new fade.
 ]=]
@@ -287,7 +434,7 @@ end
 
 	@tag VolumeFade
 
-	@return SoundEntity -- The SoundEntity instance after stopping the fade.
+	@return SoundEntity
 
 	Stops any active volume tween and retains the current volume level. This allows you to interrupt a fade in progress without resetting the volume to its original level.
 ]=]
@@ -300,130 +447,6 @@ function SoundEntity.FadeStop(self: SoundEntity): SoundEntity
 	return self
 end
 
---[=[
-	@method ResetToDefinition
-	@within SoundEntity
-
-	@return SoundEntity -- The SoundEntity instance after resetting.
-
-	Resets the sound instance to match the original sound definition. This is useful if you want to discard any changes made to the sound's properties or effects and return it to its default state as defined in the sound schema.
-]=]
-function SoundEntity.ResetToDefinition(self: SoundEntity): SoundEntity
-	--This should adjust the existing instances incase anything is attached. for now this does nothing!
-
-	return self
-end
-
--------------------------------------------------------------------------------------------------------------------------
-
---[=[
-	@method Await
-	@within SoundEntity
-
-	@param timeout number? -- Optional timeout in seconds to wait before automatically cleaning up the sound. If not provided, it will wait indefinitely until the sound finishes playing.
-
-	@yields
-
-	Waits for the sound to finish playing or for the specified timeout to elapse before cleaning up the sound instance.
-]=]
-function SoundEntity.Await(self: SoundEntity, timeout: number?)
-	if not self._sound.Playing then
-		return
-	end
-
-	local cleaner = self._cleaner:Extend()
-	local waitEvent = cleaner:Add(Instance.new("BindableEvent"))
-
-	--timeout
-	cleaner:Add(task.delay(timeout or math.huge, function()
-		waitEvent:Fire()
-	end))
-
-	--if it ends before the estimated length.
-	cleaner:Connect(self._sound.Ended, function()
-		waitEvent:Fire()
-	end)
-
-	--wait
-	waitEvent.Event:Wait()
-
-	cleaner:Clean()
-end
-
---[=[
-	@method Fork
-	@within SoundEntity
-
-	@param thread function(self: SoundEntity) -- The function to run in a new thread, which receives the SoundEntity instance as an argument.
-
-	@return SoundEntity -- The SoundEntity instance after starting the new thread.
-
-	Starts a new thread to run the provided function, allowing you to perform concurrent operations on the sound while it is playing. The thread will be automatically cleaned up when the sound is cleaned up.	
-]=]
-function SoundEntity.Fork(self: SoundEntity, thread: (self: SoundEntity) -> ()): SoundEntity
-	self._cleaner:Add(task.spawn(function()
-		thread(self)
-	end))
-
-	return self
-end
-
---[=[
-	@method Sleep
-	@within SoundEntity
-
-	@yields
-
-	@param time number -- The amount of time in seconds to wait.
-
-	@return SoundEntity -- The SoundEntity instance after waiting.
-
-	Waits for the specified amount of time before resuming. This can be used to create delays in sound sequences or effects.
-]=]
-function SoundEntity.Sleep(self: SoundEntity, time: number): SoundEntity
-	task.wait(time)
-
-	return self
-end
-
---[=[
-	@method Reset
-	@within SoundEntity
-
-	@return SoundEntity -- The SoundEntity instance after resetting.
-
-	Stops and Replays the sound from the beginning. This is useful for quickly restarting a sound without having to create a new SoundEntity instance.
-]=]
-function SoundEntity.Reset(self: SoundEntity): SoundEntity
-	self:Stop():Play()
-
-	return self
-end
-
---[=[
-	@method PlayOnce
-	@within SoundEntity
-
-	Plays the sound and automatically cleans it up after it finishes. This is useful for one-off sound effects that don't need to be reused.
-]=]
-function SoundEntity.PlayOnce(self: SoundEntity)
-	task.spawn(function()
-		self:Play():Await()
-
-		self:Cleanup()
-	end)
-end
-
---[=[
-	@method Cleanup
-	@within SoundEntity
-
-	Cleans up the Instance.
-]=]
-function SoundEntity.Cleanup(self: SoundEntity)
-	self._sound:Destroy() --trove is attached
-end
-
 ------------------------------------------------------------------------------------------------------------------------
 --[Regular Sound Methods]-----------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------
@@ -433,7 +456,7 @@ end
 	@within SoundEntity
 	@tag SoundMethod
 
-	@return SoundEntity -- The SoundEntity instance after playing.
+	@return SoundEntity
 
 	Plays the sound.
 ]=]
@@ -447,7 +470,7 @@ end
 	@within SoundEntity
 	@tag SoundMethod
 
-	@return SoundEntity -- The SoundEntity instance after pausing.
+	@return SoundEntity
 
 	Pauses the sound.
 ]=]
@@ -461,7 +484,7 @@ end
 	@within SoundEntity
 	@tag SoundMethod
 
-	@return SoundEntity -- The SoundEntity instance after resuming.
+	@return SoundEntity
 
 	Resumes the sound if it was paused.
 ]=]
@@ -475,7 +498,7 @@ end
 	@within SoundEntity
 	@tag SoundMethod
 
-	@return SoundEntity -- The SoundEntity instance after stopping.
+	@return SoundEntity
 
 	Stops the sound.
 ]=]
@@ -491,16 +514,12 @@ end
 
 	@param type "Ended" | "" -- The type of event to listen for. Currently supports "Ended" for when the sound finishes playing.
 
-	@return SoundEntity -- The SoundEntity instance after setting up the listener.
-
 	Sets up an event listener for the specified event type on the sound. This allows you to trigger actions in response to sound events, such as when the sound ends.
 ]=]
-function SoundEntity.Listen(self: SoundEntity, type: "Ended" | ""): SoundEntity
+function SoundEntity.Listen(self: SoundEntity, type: "Ended" | "")
 	--for all the events for sounds.
 
 	-- atm this does nothing!
-
-	return self
 end
 
 ------------------------------------------------------------------------------------------------------------------------
@@ -514,7 +533,7 @@ end
 
 	@param parent Instance -- The new parent for the sound.
 
-	@return SoundEntity -- The SoundEntity instance after setting the parent.
+	@return SoundEntity
 
 	Sets the parent of the underlying Sound instance. This allows you to move the sound within the Roblox hierarchy, which can affect how it is heard based on its position relative to the listener and other factors.
 ]=]
@@ -530,7 +549,7 @@ end
 
 	@param looped boolean -- Whether the sound should loop or not.
 
-	@return SoundEntity -- The SoundEntity instance after setting the looped state.
+	@return SoundEntity
 
 	Sets whether the sound should loop when it reaches the end. If `true`, the sound will automatically restart from the beginning when it finishes playing.
 ]=]
@@ -546,7 +565,7 @@ end
 
 	@param archivable boolean -- Whether the sound should be archivable.
 
-	@return SoundEntity -- The SoundEntity instance after setting the archivable state.
+	@return SoundEntity
 
 	Sets whether the sound instance can be archived.
 ]=]
@@ -562,7 +581,7 @@ end
 
 	@param playOnRemove boolean -- Whether the sound should play when removed.
 
-	@return SoundEntity -- The SoundEntity instance after setting the play on remove state.
+	@return SoundEntity
 
 	Sets whether the sound will play when the Sound instance is removed (destroyed or parent set to nil).
 ]=]
@@ -578,7 +597,7 @@ end
 
 	@param loopRegion NumberRange -- The loop region range in seconds.
 
-	@return SoundEntity -- The SoundEntity instance after setting the loop region.
+	@return SoundEntity
 
 	Sets the region of the sound that should loop when Looped is true. This property is only effective when PlaybackRegionsEnabled is true.
 ]=]
@@ -594,7 +613,7 @@ end
 
 	@param region NumberRange -- The playback region range in seconds.
 
-	@return SoundEntity -- The SoundEntity instance after setting the playback region.
+	@return SoundEntity
 
 	Sets the region of the sound that is allowed to be played. This property is only effective when PlaybackRegionsEnabled is true.
 ]=]
@@ -610,7 +629,7 @@ end
 
 	@param enabled boolean -- Whether playback regions should be enabled.
 
-	@return SoundEntity -- The SoundEntity instance after setting the playback regions enabled state.
+	@return SoundEntity
 
 	Enables or disables the use of PlaybackRegion and LoopRegion properties for more granular control over sound playback.
 ]=]
@@ -626,7 +645,7 @@ end
 
 	@param speed number -- The playback speed multiplier.
 
-	@return SoundEntity -- The SoundEntity instance after setting the playback speed.
+	@return SoundEntity
 
 	Sets the playback speed of the sound. Values higher than 1 play faster, lower values play slower.
 ]=]
@@ -642,7 +661,7 @@ end
 
 	@param maxDistance number -- The maximum distance in studs.
 
-	@return SoundEntity -- The SoundEntity instance after setting the max distance.
+	@return SoundEntity
 
 	Sets the maximum distance at which the sound can still be heard. Only applies to sounds parented to a BasePart or Attachment.
 ]=]
@@ -658,7 +677,7 @@ end
 
 	@param minDistance number -- The minimum distance in studs.
 
-	@return SoundEntity -- The SoundEntity instance after setting the min distance.
+	@return SoundEntity
 
 	Sets the minimum distance at which the sound begins to attenuate (decrease in volume). Only applies to sounds parented to a BasePart or Attachment.
 ]=]
@@ -674,7 +693,7 @@ end
 
 	@param rollOffMode Enum.RollOffMode -- The roll off mode to use.
 
-	@return SoundEntity -- The SoundEntity instance after setting the roll off mode.
+	@return SoundEntity
 
 	Sets how the sound's volume attenuates based on distance from the listener. Only applies to sounds parented to a BasePart or Attachment.
 ]=]
@@ -690,7 +709,7 @@ end
 
 	@param soundGroup SoundGroup -- The sound group to assign.
 
-	@return SoundEntity -- The SoundEntity instance after setting the sound group.
+	@return SoundEntity
 
 	Assigns the sound to a SoundGroup, which allows grouped volume control and effects management.
 ]=]
@@ -706,7 +725,7 @@ end
 
 	@param timePosition number -- The time position in seconds.
 
-	@return SoundEntity -- The SoundEntity instance after setting the time position.
+	@return SoundEntity
 
 	Sets the current playback position of the sound in seconds. Can be used to seek to a specific point in the audio.
 ]=]
@@ -722,7 +741,7 @@ end
 
 	@param volume number -- The volume level (0-10).
 
-	@return SoundEntity -- The SoundEntity instance after setting the volume.
+	@return SoundEntity
 
 	Sets the volume of the sound. Values should be between 0 and 10, where 0 is silent and 10 is maximum volume.
 ]=]
