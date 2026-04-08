@@ -7,16 +7,12 @@
 
 <!--moonwave-hide-before-this-line-->
 
-**VluxySoundFactory** Sound fetching system with a focus on simplicity and saving memory.
+**VluxySoundFactory** is a modular sound management system for Roblox, designed for structured sound definitions, dynamic playback, and efficient memory use.
 
-- Great for admin commands, but does much more.
-- Make commands that tie in specifically with your game systems.
-- Intelligent autocompletion and instant validation.
-- Run commands programmatically on behalf of the local user.
-- Bind commands to user input.
-- Secure: the client and server both validate input separately.
-- Embedded commands: dynamically use the output of an inner command when running a command.
-
-<!-- <p align="center">
-  <a href="https://giant.gfycat.com/HatefulTanAzurewingedmagpie.mp4"><img src="https://thumbs.gfycat.com/HatefulTanAzurewingedmagpie-size_restricted.gif" alt="Demo video" /></a>
-</p> -->
+- Define, organize, and manage sounds and sound groups with schema-driven configuration.
+- Easily create, clone, and manipulate sounds programmatically or by name.
+- Supports advanced features: property/effect serialization, deep cloning, and variance/randomization.
+- Provides both client and server APIs for secure, synchronized sound data and validation.
+- Includes utilities for preloading, rate limiting, and property management.
+- Enables custom sound behaviors, concurrent operations, and lifecycle management.
+- Integrates seamlessly with game systems for dynamic, reusable, and memory-efficient audio.

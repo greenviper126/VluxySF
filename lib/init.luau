@@ -1,13 +1,5 @@
 --!strict
 
---[[
-	This Is designed to make playing sounds and setting them to sound groups much easier.
-	There Is also a Variance Function to help make sounds less repetitive.
-	Use cases for Variance include footsteps, interacting with objects, etc.
-
-	PlayOnRemove doesn't change the sound position once removed. we should wait to destroy it instead.
-]]
-
 local utility = script.Utility
 local internals = script.Internals
 
