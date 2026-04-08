@@ -585,13 +585,17 @@ function SoundEntity.Stop(self: SoundEntity): SoundEntity
 end
 
 --[=[
-	@method ListenToSound
+	@method Listen
 	@within SoundEntity
 
+	@tag SoundEvent
+
 	@param eventType SoundEventTypes -- The type of sound event to listen to.
-	@param func SoundEventCallback -- The callback function to execute when the event occurs.
+	@param func EventCallback -- The callback function to execute when the event occurs.
 
 	@return Trove
+
+	@external Trove https://github.com/Sleitnick/RbxUtil/tree/main/modules/trove
 
 	Listens to a specific event on the Sound instance and executes the provided callback function when the event occurs.
 ]=]
