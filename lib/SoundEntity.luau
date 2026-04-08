@@ -234,7 +234,7 @@ function SoundEntity.Sleep(self: SoundEntity, time: number): SoundEntity
 end
 
 --[=[
-	@method Attach
+	@method RunCustom
 	@within SoundEntity
 
 	@yields
@@ -243,7 +243,7 @@ end
 
 	Runs a custom function of your choice if code needs to run in a certain sequence.
 ]=]
-function SoundEntity.Attach(self: SoundEntity, func: (self: SoundEntity) -> ()): SoundEntity
+function SoundEntity.RunCustom(self: SoundEntity, func: (self: SoundEntity) -> ()): SoundEntity
 	func(self)
 
 	return self
@@ -584,7 +584,7 @@ function SoundEntity.Stop(self: SoundEntity): SoundEntity
 	return self
 end
 
---[[
+--[=[
 	@method ListenToSound
 	@within SoundEntity
 
@@ -594,7 +594,7 @@ end
 	@return Trove
 
 	Listens to a specific event on the Sound instance and executes the provided callback function when the event occurs.
-]]
+]=]
 function SoundEntity.Listen(
 	self: SoundEntity,
 	eventType: SoundEventTypes | InstanceEventTypes,
