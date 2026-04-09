@@ -11,7 +11,7 @@ To start using VluxySF, you must initialize the package on both the server and t
 
 ## 1. Setting Up the Sound Folder
 
-First, create a Configuration (commonly named `SOUNDS`) containing all your sound instances. For details on organizing this folder, see [Folder Setup](/docs/soundSetup).
+First, create a Configuration (commonly named `SOUNDS`) containing all your sound instances. For details on organizing this folder, see [Folder Setup](/docs/FolderSetup).
 
 ---
 

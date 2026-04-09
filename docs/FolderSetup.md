@@ -4,48 +4,65 @@ sidebar_position: 4
 
 
 
+
 # Folder Setup
 
-VluxySF makes it easy to manage all your game’s sounds with a simple, powerful folder structure. This guide will walk you through the best practices for organizing, grouping, and preloading your audio assets—no manual registration required!
+VluxySF makes it easy to manage all your game’s sounds with a simple, powerful folder structure. This guide will walk you through best practices for organizing, grouping, and preloading your audio assets—no manual registration required!
 
 ---
+---
 
-## Why Structure Matters
+## The Basics: Folder Structure
+
+VluxySF uses your folder structure to automatically group and identify sounds.  
+**You do not need to manually assign SoundGroups or create them.**
+
+
+### Why Structure Matters
 
 A well-organized sound folder means:
 
-- Instantly accessible sounds by name or group
+- Instantly accessible sounds by string
 - Automatic grouping for volume/effect control
 - Easy preloading for lag-free playback
 - Cleaner, more maintainable projects
 
 ---
 
-
-
-## The Basics: Folder Structure & SoundGroups
-
-VluxySF uses your folder structure to automatically group and identify sounds.  
-**You do not need to manually assign SoundGroups.**
-
 **Legend:**
 ```
-⚙️ = Configuration Instance (Folder/Config at root, becomes a SoundGroup)
-📁 = Folder Instance (for organization only)
+⚙️ = Configuration Instance
+📁 = Folder Instance
 🔊 = Sound Instance
 ```
 
+
+**Naming Conventions:**
+
+- `UPPER_CASE` for SoundGroups
+- `PascalCase` for Folders
+- `camelCase` for Sounds
+- Avoid spaces and special characters for best compatibility.
+- Sound locations are used as keys for programmatic access (e.g., `Sounds.Create("MUSIC/Explosions/explosion1")`).
+
+---
+
 **Example:**
 ```
-SOUNDS⚙️
-  ├─ MUSIC⚙️    ← SoundGroup
-  │    ├─ mainTheme🔊
-  │    └─ battle🔊
-  └─ SFX⚙️      ← SoundGroup
-        ├─ click🔊
-        └─ explosion🔊
+SOUNDS⚙️               ← Base file
+  ├─ MUSIC⚙️           ← Name of SoundGroup
+  │    ├─ mainTheme🔊  ← Grouped to MUSIC SoundGroup
+  │    └─ battle🔊     ← Grouped to MUSIC SoundGroup
+  └─ SFX⚙️             ← Name of SoundGroup
+        ├─ click🔊     ← Grouped to SFX SoundGroup
+        └─ explosion🔊 ← Grouped to SFX SoundGroup
 ```
-*Music and SFX become SoundGroups, and their children are grouped accordingly.*
+*Music and SFX become `SoundGroups`, and their children are grouped accordingly.*
+
+
+> **Tip:** Once `SoundGroupConfigurations` are defined (MUSIC, SFX, etc.), organization within them is your choice.
+> 
+> **Tip:** It is recommended that you only use Folders and Sound Instances while organizing within a defined `SoundGroupConfigurations`. The only exception is `_Preload` (which should be a Configuration) and adding `SoundEffects` to a Sound Instance.
 
 ---
 
@@ -66,11 +83,13 @@ SOUNDS⚙️
           └─ explosion🔊
 ```
 
----
+
+> **Tip:** Plan your folder organization early. Changing a sound’s location means you must update its path in code too.
+>
+> **Tip:** You can have the same Sound Instance in different locations. But if they are both direct children of a folder, they must have different names or only one will exist in the `SoundDefinitions`.
 
 ---
-
-
+---
 
 ## Preloading Sounds Automatically
 
@@ -83,16 +102,29 @@ SOUNDS⚙️
   ├─ MUSIC⚙️
   │    ├─ mainTheme🔊
   │    └─ battle🔊
+          └─ _Preload⚙️            <-- all children will be preloaded
+            ├─ importantSound1🔊
+            └─ importantSound2🔊
   └─ SFX⚙️
         ├─ click🔊
         ├─ explosion🔊
-        └─ _Preload📁  <-- all children will be preloaded
-             ├─ importantSound1🔊
-             └─ importantSound2🔊
+        └─ _Preload⚙️               <-- all children will be preloaded
+        │    ├─ importantSound1🔊
+        │    └─ importantSound2🔊
+        └─ Explosions📁
+            ├─ unimportantSound1🔊
+            └─ unimportantSound2🔊
+            └─ _Preload⚙️            <-- all children will be preloaded
+                ├─ importantSound1🔊
+                └─ importantSound2🔊
 ```
-*You can have multiple `_Preload` folders in different SoundGroups if needed.*
 
-**Preload Timeout:**  
+> **Note:** You can have multiple `_Preload` folders in different SoundGroups if needed.
+>
+> **Note:** This works similarly to [Unity's](https://docs.unity3d.com/Manual/LoadingResourcesatRuntime.html) Resources Folder.
+
+
+### Preload Timeout
 You can set an optional timeout (in seconds) for preloading. If preloading takes too long, it will continue in the background. Default is 5 seconds.
 
 ```lua
@@ -103,21 +135,7 @@ VluxySF._initClient(preloadTimeout)
 ```
 
 ---
-
-
-## End Result
-![Folder Structure Example](https://github.com/greenviper126/VluxySF/tree/main/static/assets/SoundsConfigExample.png)
-
-## Naming Conventions
-
-- Use UPPER_CASE for SoundGroups
-- Use PascalCase for Folders
-- Use camelCase  for Sounds
-- Avoid spaces and special characters for best compatibility.
-- Sound locations are used as keys for programmatic access (e.g., `Sounds.Create("MUSIC/Explosions/explosion1")`).
-
 ---
-
 
 ## Configuring Sound Instances
 
@@ -126,6 +144,18 @@ Each Sound instance can be customized with any Roblox sound properties and child
 - **Properties:** Set properties like `SoundId`, `Volume`, `PlaybackSpeed`, etc., directly on the Sound instance.
 - **Effects:** Add child instances such as `EqualizerSoundEffect`, `ReverbSoundEffect`, etc, to the Sound for automatic serialization and reconstruction.
 
+
 *Adding any children that are not Roblox SoundEffects to a Sound in the SOUNDS config will not be serialized.*
+
+---
+---
+
+## End Result
+
+
+A SOUNDS Config should look something like this when you’re done in Roblox Studio:
+
+![Folder Structure Example](/SoundsConfigExample.png)
+
 
 ---

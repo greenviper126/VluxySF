@@ -9,6 +9,7 @@ sidebar_position: 5
 Explore practical usage patterns for VluxySF. These examples cover basic playback, group volume control, preloading, and advanced sound entity manipulation.
 
 ---
+---
 
 ## Basic Playback (Client/Server)
 
@@ -29,6 +30,7 @@ end
 *"Music/LoFi/Beat1" is just an example path in your SOUNDS folder.*
 
 
+---
 ---
 
 ## Manipulating SoundGroup Volumes
@@ -64,8 +66,11 @@ UpdateSoundGroupVolumes()
 
 
 ---
+---
 
 ## Using the SoundEntity
+
+---
 
 ### Simple Use
 
@@ -81,6 +86,7 @@ VluxySF.WaitForSchema()
 local endingMusic = VluxySF.Create("MUSIC/LoFi/beat1"):SetLooped(true):Play()
 ```
 
+---
 
 ### _Preload Startup Example
 
@@ -96,6 +102,7 @@ VluxySF.WaitForSchema()
 local endingMusic = VluxySF.Create("SFX/Guns/_Preload/shotgunFired1"):PlayOnce()
 ```
 
+---
 
 ### _Preload SoundEntity Example
 
@@ -115,6 +122,7 @@ local endingMusic = VluxySF.Create("MUSIC/LoFi/beat1"):Preload() -- yields
 endingMusic:Play() -- this sound plays first try
 ```
 
+---
 
 ### Yielding on a Separate Thread
 
