@@ -71,6 +71,7 @@ type self = {
 	_soundDefinition: Types.SoundDefinition,
 	_sound: Sound,
 
+	_forkCleaner: Trove.Trove,
 	_fadeCleaner: Trove.Trove,
 	_cleaner: Trove.Trove,
 }
@@ -125,6 +126,8 @@ function SoundEntity.new(sound: string | Types.SoundDefinition): SoundEntity
 	end
 
 	self._cleaner:AttachToInstance(self._sound)
+	self._forkCleaner = self._cleaner:Extend()
+	self._fadeCleaner = self._cleaner:Extend()
 
 	return self
 end
@@ -172,16 +175,22 @@ end
 	@method Fork
 	@within SoundEntity
 
-	@param thread function(self: SoundEntity) -- The function to run in a new thread, which receives the SoundEntity instance as an argument.
+	@param func function(self: SoundEntity) -- The function to run in a new thread, which receives the SoundEntity instance as an argument.
 
 	@return SoundEntity
 
 	Starts a new thread to run the provided function, allowing you to perform concurrent operations on the sound while it is playing.	
 ]=]
-function SoundEntity.Fork(self: SoundEntity, thread: (self: SoundEntity) -> ()): SoundEntity
-	self._cleaner:Add(task.spawn(function()
-		thread(self)
+function SoundEntity.Fork(self: SoundEntity, func: (self: SoundEntity) -> ()): SoundEntity
+	self._forkCleaner:Add(task.spawn(function()
+		func(self)
 	end))
+
+	return self
+end
+
+function SoundEntity.RemoveForks(self: SoundEntity): SoundEntity
+	self._forkCleaner:Clean()
 
 	return self
 end
@@ -408,7 +417,7 @@ function SoundEntity.FadeToRaw(self: SoundEntity, volume: number, tweenInfo: Twe
 
 	self:FadeStop()
 
-	local cleaner = self._cleaner:Extend()
+	local cleaner = self._fadeCleaner
 
 	local numberValue = cleaner:Add(Instance.new("NumberValue"))
 	numberValue.Value = self._sound.Volume
@@ -425,8 +434,6 @@ function SoundEntity.FadeToRaw(self: SoundEntity, volume: number, tweenInfo: Twe
 		tween.Completed:Wait()
 		cleaner:Clean()
 	end))
-
-	self._fadeCleaner = cleaner
 
 	return self
 end
@@ -516,10 +523,7 @@ end
 	Stops any active volume tween and retains the current volume level.
 ]=]
 function SoundEntity.FadeStop(self: SoundEntity): SoundEntity
-	if self._fadeCleaner then
-		self._fadeCleaner:Clean()
-		self._fadeCleaner = nil :: any
-	end
+	self._fadeCleaner:Clean()
 
 	return self
 end

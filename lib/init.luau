@@ -80,9 +80,18 @@ export type SoundSchema = Types.SoundSchema
 
 local soundSchema: Types.SoundSchema
 
+local isInitialized = false -- stops the public functions from executing to early if the schema isn't ready.
+
 local Random = Random.new()
 
 ----------------------------------------------------------------------------------------------------------------
+
+local function schemaFailCheck()
+	if isInitialized then
+		return
+	end
+	error("VluxySF Sound schema is not initialized yet! You need to wait before you can use this function!", 2)
+end
 
 --[=[
 	@class VluxySF
@@ -117,6 +126,8 @@ function Sounds._initServer(soundFolder: Configuration | Folder)
 
 	-- class for manipulating sounds
 	SoundEntity._injectSoundSchema(soundSchema)
+
+	isInitialized = true
 end
 
 --[=[
@@ -140,10 +151,40 @@ function Sounds._initClient(timeout: number?)
 
 	-- class for manipulating sounds
 	SoundEntity._injectSoundSchema(soundSchema)
+
+	isInitialized = true
 end
 
 --[=[
 	@within VluxySF
+
+	@return boolean -- Whether the sound system has been initialized.
+
+	Checks if the sound system has been initialized.
+]=]
+function Sounds.IsInitialized(): boolean
+	return isInitialized
+end
+
+--[=[ 
+	@within VluxySF
+
+	@yields
+
+	@return boolean -- Whether the sound schema is ready for use.
+
+	Waits until the sound schema is initialized and ready for use.
+]=]
+function Sounds.WaitForSchema()
+	repeat
+		task.wait()
+	until isInitialized
+end
+
+--[=[
+	@within VluxySF
+
+	@tag RequiresSchema
 
 	@private
 
@@ -152,28 +193,37 @@ end
 	Provides access to the internal sound schema.
 ]=]
 function Sounds._getSchema()
+	schemaFailCheck()
+
 	return soundSchema
 end
 
 --[=[
 	@within VluxySF
 
+	@tag RequiresSchema
+
 	@return SoundDefinitions -- All converted sound data
 
 	Returns all serialized sound data.
 ]=]
 function Sounds.GetSoundDefinitions(): SoundDefinitions
+	schemaFailCheck()
 	return soundSchema.SoundDefinitions
 end
 
 --[=[
 	@within VluxySF
 
+	@tag RequiresSchema
+
 	@return { string } -- All registered sound locations
 
 	Returns all sound locations.
 ]=]
 function Sounds.GetSoundLocations(): { string }
+	schemaFailCheck()
+
 	local locations = {}
 
 	for location, _ in pairs(soundSchema.SoundDefinitions) do
@@ -186,6 +236,8 @@ end
 --[=[
 	@within VluxySF
 
+	@tag RequiresSchema
+
 	@param name string -- Name of the sound group
 
 	@return SoundGroup? -- Matching sound group, if found
@@ -193,28 +245,38 @@ end
 	Finds a sound group by name.
 ]=]
 function Sounds.GetSoundGroup(name: string): SoundGroup?
+	schemaFailCheck()
+
 	return soundSchema.SoundGroups[name]
 end
 
 --[=[
 	@within VluxySF
 
+	@tag RequiresSchema
+
 	@return SoundGroups -- All sound groups
 
 	Returns all sound groups.
 ]=]
 function Sounds.GetSoundGroups(): Types.SoundGroups
+	schemaFailCheck()
+
 	return soundSchema.SoundGroups
 end
 
 --[=[
 	@within VluxySF
 
+	@tag RequiresSchema
+
 	@return { string } -- All registered sound group names
 
 	Returns all sound group names.
 ]=]
 function Sounds.GetSoundGroupNames(): { string }
+	schemaFailCheck()
+
 	local names = {}
 
 	for name, _ in pairs(soundSchema.SoundGroups) do
@@ -228,6 +290,7 @@ end
 	@within VluxySF
 
 	@tag SoundEntity
+	@tag RequiresSchema
 
 	@param sound string | SoundDefinition -- The sound location or a sound definition to attach to.
 
@@ -236,6 +299,8 @@ end
 	A constructor for manipulating your sounds.
 ]=]
 function Sounds.Create(sound: string | Types.SoundDefinition): SoundEntity.SoundEntity
+	schemaFailCheck()
+
 	return SoundEntity.new(sound)
 end
 
@@ -244,6 +309,8 @@ end
 --[=[
 	@within VluxySF
 
+	@tag RequiresSchema
+
 	@param soundDefinition SoundDefinition -- The sound definition to construct from.
 
 	@return Sound -- Constructed sound instance based on the provided definition.
@@ -251,11 +318,15 @@ end
 	Constructs a sound instance from a given sound definition, applying all specified properties and effects.
 ]=]
 function Sounds.ConstructSoundFromDefinition(soundDefinition: SoundDefinition): Sound
+	schemaFailCheck()
+
 	return SoundTools.CreateSound(soundSchema, soundDefinition)
 end
 
 --[=[
 	@within VluxySF
+
+	@tag RequiresSchema
 
 	@param sound Sound -- The sound instance to convert into a sound definition.
 
@@ -266,11 +337,15 @@ end
 	This does not get added to the definitions list.
 ]=]
 function Sounds.CreateSoundDefinitionFromSound(sound: Sound): SoundDefinition
+	schemaFailCheck()
+
 	return SoundTools.CreateSoundDefinition(sound)
 end
 
 --[=[
 	@within VluxySF
+
+	@tag RequiresSchema
 
 	@yields
 
@@ -281,6 +356,8 @@ end
 	Constructs a sound instance from a sound definition identified by its name.
 ]=]
 function Sounds.ConstructSoundFromName(name: string): Sound?
+	schemaFailCheck()
+
 	local soundDefinition = SoundTools.FindSoundDefinition(soundSchema, name)
 	if not soundDefinition then
 		return nil

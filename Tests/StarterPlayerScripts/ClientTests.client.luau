@@ -8,12 +8,12 @@ VluxySF._initClient()
 
 --tests
 
-print(VluxySF._getSchema())
+--print(VluxySF._getSchema())
 --print(VluxySF.GetSoundGroup("Game"), VluxySF.GetSoundGroups(), VluxySF.GetSoundGroupNames())
 --print(VluxySF.GetSoundLocations(), VluxySF.GetSoundDefinitions())
 
 --sound class
-local endingMusic = VluxySF.Create("Music/Ending/EndingMusic")
+local endingMusic = VluxySF.Create("MUSIC/Ending/endingMusic")
 	:SetLooped(true)
 	:SetPlaybackSpeed(VluxySF.Variance()())
 	:Fork(function(self)
@@ -23,7 +23,7 @@ local endingMusic = VluxySF.Create("Music/Ending/EndingMusic")
 task.wait(5)
 
 --direct sound manipulation
-local ambience1 = VluxySF.ConstructSoundFromName("Music/Mystification 2")
+local ambience1 = VluxySF.ConstructSoundFromName("MUSIC/Mystification2")
 if ambience1 then
 	--print(VluxySF.GetEstimatedPlayLength(ambience1))
 	ambience1:Play()
