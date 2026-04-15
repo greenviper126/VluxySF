@@ -762,7 +762,7 @@ end
 
 	@tag SoundEvent
 
-	@param eventType SoundEventTypes -- The type of sound event to listen to.
+	@param eventType SoundEventTypes | InstanceEventTypes -- The type of event to listen to.
 	@param func EventCallback -- The callback function to execute when the event occurs.
 
 	@return Trove
