@@ -583,14 +583,18 @@ end
 	@tag RequiresSchema
 
 	@param name string -- The name of the sound definition to fetch.
-	@param parent Instance? -- Optional parent instance to which the sound will be attached before playing.
+	@param beforePlay (Sound) -> () -- A callback function to execute before the sound plays.
 	@param waitOnLoad boolean? -- Whether to wait for the sound to load before playing (default: false).
 
 	@return Sound? -- The fetched sound instance if found, otherwise nil.
 
 	Fetches a sound, sets it up for one-time playback, and optionally waits for it to load before playing. The sound will be automatically cleaned up after it finishes playing.
 ]=]
-function Sounds.FetchPlayOnce(name: string, parent: Instance?, waitOnLoad: boolean?): Types.SoundDefinitionInstanced?
+function Sounds.FetchPlayOnce(
+	name: string,
+	beforePlay: (Sound) -> (),
+	waitOnLoad: boolean?
+): Types.SoundDefinitionInstanced?
 	schemaFailCheck()
 
 	local sound = Sounds.Fetch(name)
@@ -599,9 +603,10 @@ function Sounds.FetchPlayOnce(name: string, parent: Instance?, waitOnLoad: boole
 		return nil
 	end
 	sound.Looped = false
-	sound.Parent = parent
 
 	task.spawn(function()
+		beforePlay(sound)
+
 		if waitOnLoad and not sound.IsLoaded then
 			sound.Loaded:Wait()
 		end
