@@ -6,7 +6,7 @@ license = "MIT"
 registry = "https://github.com/UpliftGames/wally-index"
 realm = "shared"
 
-include = ["VluxySF", "default.project.json", "LICENSE"]
+include = ["lib", "default.project.json", "LICENSE"]
 
 exclude = [
     "assets",
