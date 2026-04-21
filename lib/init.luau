@@ -514,12 +514,13 @@ end
 	@tag RequiresSchema
 
 	@param location string -- The direct location of the `SoundDefinition` or the name of the `SoundDefinition`.
+	@param preset (Sound) -> ()? -- function to preconfigure the sound.
 
 	@return Sound? -- The fetched sound instance if found, otherwise nil.
 	
 	Finds the specified `SoundDefinition` and gives back a playable `Sound` if it exists.
 ]=]
-function Sounds.Fetch(location: string): Types.SoundDefinitionInstanced?
+function Sounds.Fetch(location: string, preset: (Sound) -> ()?): Types.SoundDefinitionInstanced?
 	schemaFailCheck()
 
 	local isDirect = #location:split("/") ~= 1
@@ -542,7 +543,12 @@ function Sounds.Fetch(location: string): Types.SoundDefinitionInstanced?
 		return nil
 	end
 
-	return Conversions.DefinitionToSound(definition)
+	local sound = Conversions.DefinitionToSound(definition)
+	if preset then
+		preset(sound)
+	end
+
+	return sound
 end
 
 --[=[
@@ -553,12 +559,13 @@ end
 
 	@param groupName string -- The name of the sound group to search within.
 	@param name string -- The name of the `SoundDefinition` to find within the specified sound group.
+	@param preset (Sound) -> ()? -- function to preconfigure the sound.
 
 	@return Sound? -- The fetched sound instance if found, otherwise nil.
 
 	Similar to `Fetch`, but is more accurate than fetching by name but less accurate then the full location. A middle ground so you can write less and still somewhat specify!
 ]=]
-function Sounds.FetchFromGroup(groupName: string, name: string): Types.SoundDefinitionInstanced?
+function Sounds.FetchFromGroup(groupName: string, name: string, preset: (Sound) -> ()?): Types.SoundDefinitionInstanced?
 	schemaFailCheck()
 
 	local location = Fetching.FromSoundGroup(soundSchema, groupName, name)
@@ -573,7 +580,12 @@ function Sounds.FetchFromGroup(groupName: string, name: string): Types.SoundDefi
 		return nil
 	end
 
-	return Conversions.DefinitionToSound(definition)
+	local sound = Conversions.DefinitionToSound(definition)
+	if preset then
+		preset(sound)
+	end
+
+	return sound
 end
 
 --[=[
@@ -583,21 +595,17 @@ end
 	@tag RequiresSchema
 
 	@param name string -- The name of the sound definition to fetch.
-	@param beforePlay (Sound) -> () -- A callback function to execute before the sound plays.
+	@param preset (Sound) -> ()? -- A callback function to execute before the sound plays.
 	@param waitOnLoad boolean? -- Whether to wait for the sound to load before playing (default: false).
 
 	@return Sound? -- The fetched sound instance if found, otherwise nil.
 
 	Fetches a sound, sets it up for one-time playback, and optionally waits for it to load before playing. The sound will be automatically cleaned up after it finishes playing.
 ]=]
-function Sounds.FetchPlayOnce(
-	name: string,
-	beforePlay: (Sound) -> (),
-	waitOnLoad: boolean?
-): Types.SoundDefinitionInstanced?
+function Sounds.FetchPlayOnce(name: string, preset: (Sound) -> ()?, waitOnLoad: boolean?)
 	schemaFailCheck()
 
-	local sound = Sounds.Fetch(name)
+	local sound = Sounds.Fetch(name, preset)
 
 	if not sound then
 		return nil
@@ -605,8 +613,6 @@ function Sounds.FetchPlayOnce(
 	sound.Looped = false
 
 	task.spawn(function()
-		beforePlay(sound)
-
 		if waitOnLoad and not sound.IsLoaded then
 			sound.Loaded:Wait()
 		end
@@ -625,7 +631,7 @@ function Sounds.FetchPlayOnce(
 		Debris:AddItem(sound, playLength)
 	end)
 
-	return sound
+	return nil
 end
 
 ----------------------------------------------------------------------------------------------------------------
