@@ -1,6 +1,8 @@
 --!strict
 
-local Types = require(script.Parent.Parent.Types)
+local libarary = script.Parent.Parent
+
+local Types = require(libarary.Types)
 
 local Hasher = {}
 

@@ -1,7 +1,9 @@
 --!strict
 local ContentProvider = game:GetService("ContentProvider")
 
-local Types = require(script.Parent.Parent.Types)
+local libarary = script.Parent.Parent
+
+local Types = require(libarary.Types)
 
 --[[
     Module responsible for preloading sounds based on various identifiers such as sound locations, Sound instances, or SoundDefinitions. Utilizes ContentProvider for efficient preloading.

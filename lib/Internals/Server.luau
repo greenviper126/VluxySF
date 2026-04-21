@@ -3,18 +3,16 @@
 
 ------------------------------------------------------------------------------------------------------------------------
 
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local SoundService = game:GetService("SoundService")
 
 local library = script.Parent.Parent
-local utility = script.Parent.Parent.Utility
 
-local Ratelimit = require(utility.RateLimit)
-local RemoteFunction = require(utility.RemoteFunction)
+local Ratelimit = require(library.Utility.RateLimit)
+local RemoteFunction = require(library.Utility.RemoteFunction)
 
 local Conversions = require(library.Tools.Conversions)
-local Fetching = require(ReplicatedStorage.VluxySF.Tools.Fetching)
+local Fetching = require(library.Tools.Fetching)
 local Hasher = require(library.Tools.Hasher)
 
 local Types = require(library.Types)

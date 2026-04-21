@@ -5,11 +5,11 @@
 local ContentProvider = game:GetService("ContentProvider")
 local RunService = game:GetService("RunService")
 
-local utility = script.Parent.Parent.Utility
+local library = script.Parent.Parent
 
-local RemoteFunction = require(utility.RemoteFunction)
+local RemoteFunction = require(library.Utility.RemoteFunction)
 
-local Types = require(script.Parent.Parent.Types)
+local Types = require(library.Types)
 
 ------------------------------------------------------------------------------------------------------------------------
 

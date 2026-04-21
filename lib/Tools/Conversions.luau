@@ -1,7 +1,9 @@
 --!strict
 
-local Properties = require(script.Parent.Parent.Utility.Properties)
-local Types = require(script.Parent.Parent.Types)
+local libarary = script.Parent.Parent
+
+local Properties = require(libarary.Utility.Properties)
+local Types = require(libarary.Types)
 
 local ALLOWED_SOUND_CHILDREN = {
 	"ChorusSoundEffect",
