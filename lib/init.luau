@@ -356,6 +356,7 @@ end
 	```
 ]=]
 function Sounds.WaitForSchema()
+	--I am very aware that this looks janky It will be changed later.
 	repeat
 		task.wait()
 	until isInitialized
