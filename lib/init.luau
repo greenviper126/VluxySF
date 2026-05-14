@@ -5,245 +5,66 @@ local Debris = game:GetService("Debris")
 local tools = script.Tools
 local utility = script.Utility
 local internals = script.Internals
+local sections = script.Sections
 
-local Jitter = require(utility.Jitter)
 local Tables = require(utility.Tables)
 
 local Conversions = require(tools.Conversions)
 local Fetching = require(tools.Fetching)
+local FormatMessage = require(utility.FormatMessage)
 local Preload = require(tools.Preload)
 local SoundMisc = require(tools.SoundMisc)
-local SoundPresets = require(tools.SoundPresets)
+
+local Jitter = require(sections.Jitter)
+local SoundPresets = require(sections.SoundPresets)
 
 local Types = require(script.Types)
 
 ----------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------
 
---[=[
-	@interface SoundSchema
-	@within VluxySF
-
-	@tag Schema
-
-	.UnattachedSounds Configuration -- A folder for storing unattached sounds.
-	.SoundGroupContainer Configuration -- A folder for storing sound groups.
-	.SoundGroups SoundGroups -- A dictionary of sound group instances, organized by name.
-	.SoundDefinitions SoundDefinitions -- A dictionary of sound definitions, organized by sound name.
-	.DefinitionsGroupHash Dictionary<Dictionary<string>> -- Set of hashmaps for fast searching.
-	.PreloadIds { string } -- A list of sound asset IDs to preload.
-
-	Defines the overall schema for the sound system, containing all necessary data for sound creation and management.
-]=]
 export type SoundSchema = Types.SoundSchema
 
 ----------------------------------------------------------------------------------------------------------------
 
---[=[
-	@type SoundDefinitionInstanced Sound & SoundChildrenInstanced
-	@within VluxySF
-
-	@tag Instanced
-
-	Defines a sound group, which is a collection of sounds that can be managed together, allowing for collective volume control and organization.
-]=]
-export type SoundDefinitionInstanced = Types.SoundDefinitionInstanced
-
---[=[
-	@interface SoundChildrenInstanced
-	@within VluxySF
-
-	@tag Instanced
-	
-	.TremoloSoundEffect TremoloSoundEffect?
-	.ReverbSoundEffect ReverbSoundEffect?
-	.PitchShiftSoundEffect PitchShiftSoundEffect?
-	.FlangeSoundEffect FlangeSoundEffect?
-	.EqualizerSoundEffect EqualizerSoundEffect?
-	.EchoSoundEffect EchoSoundEffect?
-	.DistortionSoundEffect DistortionSoundEffect?
-	.CompressorSoundEffect CompressorSoundEffect?
-	.ChorusSoundEffect ChorusSoundEffect?
-	
-	Defines the possible child sound effects that can be attached to a sound instance, allowing for enhanced audio manipulation and variation.
-]=]
-export type SoundChildrenInstanced = Types.SoundChildrenInstanced
-
-------------------------------------------------------------------------------------------------------------------------
-
---[=[
-	@type SoundGroups {[string]: SoundGroup}
-	@within VluxySF
-
-	@tag Instanced
-
-	Defines the type of a sound group instance.
-]=]
 export type SoundGroups = Types.SoundGroups
 
+export type SoundDefinitionInstanced = Types.SoundDefinitionInstanced
+export type SoundChildrenInstanced = Types.SoundChildrenInstanced
+
+----------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------
 
---[=[
-	@type SoundDefinitions {[string]: SoundDefinition}
-	@within VluxySF
-
-	@tag Serialized
-
-	Defines the sound definitions of the system as a dictionary of sound names to their corresponding sound data.
-]=]
 export type SoundDefinitions = Types.SoundDefinitions
-
---[=[
-	@interface SoundDefinition
-	@within VluxySF
-
-	@tag Serialized
-
-	.Properties SoundSerialized -- The properties of the sound itself, such as SoundId, Volume, etc.
-	.Effects SoundChildrenSerialized -- The sound effects of the sound, organized by class name.
-
-	Defines the properties and sound effects of a sound.
-]=]
 export type SoundDefinition = Types.SoundDefinition
 
 ------------------------------------------------------------------------------------------------------------------------
 
---[=[
-	@interface SoundChildrenSerialized
-	@within VluxySF
-
-	@tag Serialized
-
-	.ChorusSoundEffect ChorusSoundEffectSerialized?
-	.CompressorSoundEffect CompressorSoundEffectSerialized?
-	.DistortionSoundEffect DistortionSoundEffectSerialized?
-	.EchoSoundEffect EchoSoundEffectSerialized?
-	.EqualizerSoundEffect EqualizerSoundEffectSerialized?
-	.FlangeSoundEffect FlangeSoundEffectSerialized?
-	.PitchShiftSoundEffect PitchShiftSoundEffectSerialized?
-	.ReverbSoundEffect ReverbSoundEffectSerialized?
-	.TremoloSoundEffect TremoloSoundEffectSerialized?
-
-	Defines the sound effects of a sound as a dictionary of class names to their corresponding properties.
-]=]
 export type SoundChildrenSerialized = Types.SoundChildrenSerialized
 
-------------------------------------------------------------------------------------------------------------------------
-
---[=[
-	@type SoundSerialized {[string]: any}
-	@within VluxySF
-
-	@tag Serialized
-
-	Defines the properties of a sound as a dictionary of property names and values.
-]=]
 export type SoundSerialized = Types.SoundSerialized
 
---[=[
-	@type ChorusSoundEffectSerialized {[string]: any}
-	@within VluxySF
-
-	@tag Serialized
-
-	Defines the properties of a ChorusSoundEffect as a dictionary of property names and values.
-]=]
 export type ChorusSoundEffectSerialized = Types.ChorusSoundEffectSerialized
-
---[=[
-	@type CompressorSoundEffectSerialized {[string]: any}
-	@within VluxySF
-
-	@tag Serialized
-
-	Defines the properties of a CompressorSoundEffect as a dictionary of property names and values.
-]=]
 export type CompressorSoundEffectSerialized = Types.CompressorSoundEffectSerialized
-
---[=[
-	@type DistortionSoundEffectSerialized {[string]: any}
-	@within VluxySF
-
-	@tag Serialized
-
-	Defines the properties of a DistortionSoundEffect as a dictionary of property names and values.
-]=]
 export type DistortionSoundEffectSerialized = Types.DistortionSoundEffectSerialized
-
---[=[
-	@type EchoSoundEffectSerialized {[string]: any}
-	@within VluxySF
-
-	@tag Serialized
-
-	Defines the properties of an EchoSoundEffect as a dictionary of property names and values.
-]=]
 export type EchoSoundEffectSerialized = Types.EchoSoundEffectSerialized
-
---[=[
-	@type EqualizerSoundEffectSerialized {[string]: any}
-	@within VluxySF
-
-	@tag Serialized
-
-	Defines the properties of an EqualizerSoundEffect as a dictionary of property names and values.
-]=]
 export type EqualizerSoundEffectSerialized = Types.EqualizerSoundEffectSerialized
-
---[=[
-	@type FlangeSoundEffectSerialized {[string]: any}
-	@within VluxySF
-	
-	@tag Serialized
-
-	Defines the properties of a FlangeSoundEffect as a dictionary of property names and values.
-]=]
 export type FlangeSoundEffectSerialized = Types.FlangeSoundEffectSerialized
-
---[=[
-	@type PitchShiftSoundEffectSerialized {[string]: any}
-	@within VluxySF
-
-	@tag Serialized
-
-	Defines the properties of a PitchShiftSoundEffect as a dictionary of property names and values.
-]=]
 export type PitchShiftSoundEffectSerialized = Types.PitchShiftSoundEffectSerialized
-
---[=[
-	@type ReverbSoundEffectSerialized {[string]: any}
-	@within VluxySF
-
-	@tag Serialized
-
-	Defines the properties of a ReverbSoundEffect as a dictionary of property names and values.
-]=]
 export type ReverbSoundEffectSerialized = Types.ReverbSoundEffectSerialized
-
---[=[
-	@type TremoloSoundEffectSerialized {[string]: any}
-	@within VluxySF
-
-	@tag Serialized
-
-	Defines the properties of a TremoloSoundEffect as a dictionary of property names and values.
-]=]
 export type TremoloSoundEffectSerialized = Types.TremoloSoundEffectSerialized
 
 ----------------------------------------------------------------------------------------------------------------
 
 local soundSchema: Types.SoundSchema
 
+local initializedEvent = Instance.new("BindableEvent", script)
 local isInitialized = false -- stops the public functions from executing to early if the schema isn't ready.
 
-----------------------------------------------------------------------------------------------------------------
+local schemaFailCheck =
+	FormatMessage.ErrorThunk("Sound schema is not initialized yet! You need to wait before you can use this function!")
 
-local function schemaFailCheck()
-	if isInitialized then
-		return
-	end
-	error("VluxySF Sound schema is not initialized yet! You need to wait before you can use this function!", 2)
-end
+----------------------------------------------------------------------------------------------------------------
 
 --[=[
 	@class VluxySF
@@ -254,60 +75,10 @@ end
 	VluxySoundFactory is a sound management system designed to simplify the process of creating, organizing, and playing sounds in Roblox.
 	
 	It allows developers to define sounds and their properties in a structured way, supports sound groups for better organization, and includes functionality for adding variance to sound playback to make it less repetitive.
+
+	The Below sections are part of the VluxySF module.
 ]=]
 local Sounds = {}
-
-----------------------------------------------------------------------------------------------------------------
---INITIALIZATION------------------------------------------------------------------------------------------------
-----------------------------------------------------------------------------------------------------------------
-
---[=[
-	@within VluxySF
-
-	@private
-
-	@server
-
-	@param soundFolder Configuration | Folder -- Folder containing all sound data
-
-	Injects the source folder used to build sound data and sets up server-side structures.
-]=]
-function Sounds._initServer(soundFolder: Configuration | Folder)
-	local Server = require(internals.Server)
-	Server._initServer(soundFolder)
-
-	--fetch
-	soundSchema = Server.GetSoundSchema()
-	Tables.DeepFreeze(soundSchema)
-
-	isInitialized = true
-end
-
---[=[
-	@within VluxySF
-
-	@private
-
-	@client
-
-	@yields
-
-	@param timeout number? -- optional timeout for preloading sounds, default is 5 seconds
-
-	Sets up client-side structures and retrieves sound data from the server.
-]=]
-function Sounds._initClient(timeout: number?)
-	local Client = require(internals.Client)
-	Client._initClient(timeout)
-
-	--fetch
-	soundSchema = Client.GetSoundSchema()
-	Tables.DeepFreeze(soundSchema)
-
-	isInitialized = true
-
-	print(`[vluxysf]: The sound schema has been initialized and is ready for use!`)
-end
 
 ----------------------------------------------------------------------------------------------------------------
 --SCHEMA_STARTUP------------------------------------------------------------------------------------------------
@@ -323,17 +94,59 @@ Sounds.Startup = {}
 --[=[
 	@within Startup
 
+	@server
+
+	@param soundFolder Configuration | Folder -- Folder containing all sound data
+
+	Injects the source folder used to build sound data and sets up server-side structures.
+
+	This should only run once!
+]=]
+function Sounds.Startup.InitServer(soundFolder: Configuration | Folder)
+	local Server = require(internals.Server)
+	Server._initServer(soundFolder)
+
+	--fetch
+	soundSchema = Server.GetSoundSchema()
+	Tables.DeepFreeze(soundSchema)
+
+	isInitialized = true
+	initializedEvent:Fire()
+end
+
+--[=[
+	@within Startup
+
+	@client
+
+	@yields
+
+	@param timeout number? -- optional timeout for preloading sounds, default is 5 seconds
+
+	Sets up client-side structures and retrieves sound data from the server.
+
+	This should only run once!
+]=]
+function Sounds.Startup.InitClient(timeout: number?)
+	local Client = require(internals.Client)
+	Client._initClient(timeout)
+
+	--fetch
+	soundSchema = Client.GetSoundSchema()
+	Tables.DeepFreeze(soundSchema)
+
+	isInitialized = true
+	initializedEvent:Fire()
+
+	FormatMessage.Print("The sound schema has been initialized and is ready for use!")
+end
+
+--[=[
+	@within Startup
+
 	@return boolean -- Whether the sound schema has been initialized.
 
 	Checks if the sound schema has been initialized.
-
-	```lua
-	if Sounds.IsInitialized() then
-		print("Sound schema is ready to use!")
-	else
-		print("Sound schema is not initialized yet. Please wait!")
-	end
-	```
 ]=]
 function Sounds.Startup.IsInitialized(): boolean
 	return isInitialized
@@ -349,22 +162,13 @@ end
 	Waits until the sound schema is initialized and ready for use.
 
 	If you know that your code will execute after the schema is loaded then this is not needed.
-
-	```lua
-	print("Waiting for sound system to initialize...")
-
-	Sounds.Startup.WaitForSchema()
-
-	print("Sound system is now initialized and ready to use!")
-
-	--now you can use functions and methods that require the schema!
-	```
 ]=]
 function Sounds.Startup.WaitForSchema()
-	--I am very aware that this looks janky It will be changed later.
-	repeat
-		task.wait()
-	until isInitialized
+	if isInitialized then
+		return
+	end
+
+	initializedEvent.Event:Wait()
 end
 
 ----------------------------------------------------------------------------------------------------------------
@@ -374,6 +178,8 @@ end
 --[=[
 	@class Schema
 
+	@tag RequiresSchema
+
 	Functions for accessing the sound schema and its data.
 ]=]
 Sounds.Schema = {}
@@ -381,17 +187,9 @@ Sounds.Schema = {}
 --[=[
 	@within Schema
 
-	@tag RequiresSchema
-
 	@return SoundSchema -- The internal sound schema used by the system.
 
 	Provides access to the internal sound schema.
-
-	```lua
-	local schema = Sounds._getSchema()
-
-	print("Unattached sounds folder:", schema.UnattachedSounds)
-	```
 ]=]
 function Sounds.Schema.Get(): SoundSchema
 	schemaFailCheck()
@@ -402,21 +200,9 @@ end
 --[=[
 	@within Schema
 
-	@tag RequiresSchema
-
 	@return SoundDefinitions -- All converted sound data
 
 	Returns all serialized sound data.
-
-	```lua
-	local definitions = Sounds.GetSoundDefinitions()
-
-	for location, data in pairs(definitions) do
-		print("Sound location:", location)
-		print("Sound properties:", data.Properties)
-		print("Sound effects:", data.Effects)
-	end
-	```
 ]=]
 function Sounds.Schema.GetDefinitions(): SoundDefinitions
 	schemaFailCheck()
@@ -427,19 +213,9 @@ end
 --[=[
 	@within Schema
 
-	@tag RequiresSchema
-
 	@return { string } -- All registered sound locations
 
 	Returns all sound locations.
-
-	```lua
-	local locations = Sounds.Schema.GetLocations()
-
-	for _, location in ipairs(locations) do
-		print("Sound location:", location)
-	end
-	```
 ]=]
 function Sounds.Schema.GetLocations(): { string }
 	schemaFailCheck()
@@ -460,14 +236,14 @@ end
 --[=[
 	@class SoundGroups
 
+	@tag RequiresSchema
+
 	Functions for getting and setting the created sound groups.
 ]=]
 Sounds.Groups = {}
 
 --[=[
 	@within SoundGroups
-	
-	@tag RequiresSchema
 
 	@return SoundGroups -- All sound groups defined in the schema.
 
@@ -481,8 +257,6 @@ end
 
 --[=[
 	@within SoundGroups
-
-	@tag RequiresSchema
 
 	@param name string -- The name of the sound group to retrieve.
 
@@ -498,8 +272,6 @@ end
 
 --[=[
 	@within SoundGroups
-
-	@tag RequiresSchema
 
 	@return { string } -- A list of all sound group names defined in the schema.
 
@@ -519,8 +291,6 @@ end
 
 --[=[
 	@within SoundGroups
-
-	@tag RequiresSchema
 
 	@param volumes { [string]: number } -- A dictionary mapping sound group names to their desired volume levels.
 
@@ -548,14 +318,14 @@ end
 --[=[
 	@class Fetchers
 
+	@tag RequiresSchema
+
 	Functions for fetching and creating sounds based on the defined schema.
 ]=]
 Sounds.Fetch = {}
 
 --[=[
 	@within Fetchers
-
-	@tag RequiresSchema
 
 	@param location string -- The direct location of the `SoundDefinition` or the name of the `SoundDefinition`.
 	@param preset (Sound) -> ()? -- function to preconfigure the sound.
@@ -598,8 +368,6 @@ end
 --[=[
 	@within Fetchers
 
-	@tag RequiresSchema
-
 	@param groupName string -- The name of the sound group to search within.
 	@param name string -- The name of the `SoundDefinition` to find within the specified sound group.
 	@param preset (Sound) -> ()? -- function to preconfigure the sound.
@@ -638,8 +406,6 @@ end
 --[=[
 	@within Fetchers
 
-	@tag RequiresSchema
-
 	@param name string -- The name of the sound definition to fetch.
 	@param preset (Sound) -> ()? -- A callback function to execute before the sound plays.
 	@param waitOnLoad boolean? -- Whether to wait for the sound to load before playing (default: false).
@@ -673,7 +439,7 @@ function Sounds.Fetch.PlayOnce(name: string, preset: (Sound) -> ()?, waitOnLoad:
 			return
 		end
 
-		local playLength = Sounds.GetPlayLength(sound) or 1
+		local playLength = Sounds.Misc.GetPlayLength(sound) or 1
 		Debris:AddItem(sound, playLength)
 	end)
 
@@ -718,30 +484,41 @@ function Sounds.Conversions.FromDefinition(definition: SoundDefinition): Types.S
 end
 
 ----------------------------------------------------------------------------------------------------------------
---PRELOAD_FUNCTIONS---------------------------------------------------------------------------------------------
+--PRESETS-------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------
 
---[=[
-	@within VluxySF
+Sounds.Presets = SoundPresets
 
-	@tag Preload
+----------------------------------------------------------------------------------------------------------------
+--JITTER_FUNCTIONS----------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------
 
-	@param ... string | Sound | SoundDefinition -- A variable number of sound identifiers, which can be sound locations, Sound instances, or SoundDefinitions.
-
-	Preloads through ContentProvider.
-]=]
-function Sounds.PreloadSelected(...: string | Sound | SoundDefinition)
-	return Preload.Selected(...)
-end
+Sounds.Jitter = Jitter
 
 ----------------------------------------------------------------------------------------------------------------
 --MISC----------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------
 
 --[=[
-	@within VluxySF
+	@class Misc
 
-	@tag Misc
+	Functions for miscellaneous sound-related tasks that don't fit into other categories.
+]=]
+Sounds.Misc = {}
+
+--[=[
+	@within Misc
+
+	@param ... string | Sound | SoundDefinition -- A variable number of sound identifiers, which can be sound locations, Sound instances, or SoundDefinitions.
+
+	Preloads through ContentProvider.
+]=]
+function Sounds.Misc.PreloadSelected(...: string | Sound | SoundDefinition)
+	return Preload.Selected(...)
+end
+
+--[=[
+	@within Misc
 
 	@param sound Sound -- The sound instance to analyze.
 
@@ -756,22 +533,8 @@ end
 	print("Play length:", estimatedLength, "seconds")
 	```
 ]=]
-function Sounds.GetPlayLength(sound: Sound): number
+function Sounds.Misc.GetPlayLength(sound: Sound): number
 	return SoundMisc.GetEstimatedPlayLength(sound)
 end
-
-----------------------------------------------------------------------------------------------------------------
---PRESETS-------------------------------------------------------------------------------------------------------
-----------------------------------------------------------------------------------------------------------------
-
-Sounds.Presets = SoundPresets
-
-----------------------------------------------------------------------------------------------------------------
---JITTER_FUNCTIONS----------------------------------------------------------------------------------------------
-----------------------------------------------------------------------------------------------------------------
-
-Sounds.Jitter = Jitter
-
-----------------------------------------------------------------------------------------------------------------
 
 return Sounds

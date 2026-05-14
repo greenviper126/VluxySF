@@ -2,6 +2,8 @@
 
 local libarary = script.Parent.Parent
 
+local FormatMessage = require(libarary.Utility.FormatMessage)
+
 local Types = require(libarary.Types)
 
 --[[
@@ -90,13 +92,13 @@ end
 function Fetching.FromSoundGroup(schema: Types.SoundSchema, soundGroup: string, name: string): string?
 	local groupHash = schema.DefinitionsGroupHash[soundGroup]
 	if not groupHash then
-		warn(`No sound definitions found for sound group {soundGroup}!`)
+		FormatMessage.Warn(`No sound definitions found for sound group {soundGroup}!`)
 		return nil
 	end
 
 	local location = groupHash[name]
 	if not location then
-		warn(`No sound definition found for sound named {name} in sound group {soundGroup}!`)
+		FormatMessage.Warn(`No sound definition found for sound named {name} in sound group {soundGroup}!`)
 		return nil
 	end
 

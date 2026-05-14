@@ -8,6 +8,7 @@ local SoundService = game:GetService("SoundService")
 
 local library = script.Parent.Parent
 
+local FormatMessage = require(library.Utility.FormatMessage)
 local Ratelimit = require(library.Utility.RateLimit)
 local RemoteFunction = require(library.Utility.RemoteFunction)
 
@@ -58,7 +59,9 @@ local function setGroupedSounds(soundDefinitions: Types.SoundDefinitions, childF
 
 		--to enforce more traditional naming style of sounds
 		if names[sound.Name] and usesStrictNaming then
-			warn(`Duplicate sound name of {sound.Name} was found in {childFolder.Name} group!, {sound:GetFullName()}`)
+			FormatMessage.Warn(
+				`Duplicate sound name of {sound.Name} was found in {childFolder.Name} group!, {sound:GetFullName()}`
+			)
 		end
 		names[sound.Name] = true
 
@@ -74,7 +77,7 @@ local function setGroupedSounds(soundDefinitions: Types.SoundDefinitions, childF
 			local soundLocation = Fetching.CreateLocation(sound, childFolder)
 			soundDefinitions[soundLocation] = result
 		else
-			warn(result)
+			FormatMessage.Warn(result)
 		end
 	end
 end
@@ -122,9 +125,12 @@ local function initializeServerSoundSystem(soundFolder: Configuration)
 
 	--send conversion to client
 	local soundRequestLimit = Ratelimit(5, 5)
+	local dataLimitThunk = FormatMessage.WarnThunk("Sound data was requested too many times by a client!")
+
 	RemoteFunction.new("SoundRequest", function(player: Player)
 		if not soundRequestLimit(player) then
-			warn("Sound data was requested too many times by " .. player.Name .. "!")
+			dataLimitThunk()
+
 			return nil
 		end
 
@@ -149,10 +155,10 @@ local ServerData = {}
 ]]
 function ServerData._initServer(soundFolder: Configuration | Folder, strictNaming: boolean?)
 	if RunService:IsClient() then
-		error(`Cannot initialize server on client! {soundFolder:GetFullName()}`)
+		FormatMessage.Error(`Cannot initialize server on client! {soundFolder:GetFullName()}`)
 	end
 	if typeof(soundFolder) ~= "Instance" then
-		error(`Invalid sound folder injected! {soundFolder:GetFullName()}`)
+		FormatMessage.Error(`Invalid sound folder injected! {soundFolder:GetFullName()}`)
 	end
 
 	if strictNaming ~= nil then

@@ -2,6 +2,8 @@
 
 local libarary = script.Parent.Parent
 
+local FormatMessage = require(libarary.Utility.FormatMessage)
+
 local Types = require(libarary.Types)
 
 local Hasher = {}
@@ -20,12 +22,12 @@ function Hasher.HashGroups(schema: Types.SoundSchema): { [string]: { [string]: s
 		local splitLocation = location:split("/")
 
 		if not splitLocation[1] then
-			warn(`Invalid sound definition location: {location}`)
+			FormatMessage.Warn(`Invalid sound definition location: {location}`)
 			continue
 		end
 
 		if not splitLocation[#splitLocation] then
-			warn(`Invalid sound definition location: {location}`)
+			FormatMessage.Warn(`Invalid sound definition location: {location}`)
 			continue
 		end
 
@@ -38,7 +40,7 @@ function Hasher.HashGroups(schema: Types.SoundSchema): { [string]: { [string]: s
 
 		local innerGroupHash = groupHash[groupName]
 		if innerGroupHash[soundName] then
-			warn(`Duplicate sound definition location: {location}`)
+			FormatMessage.Warn(`Duplicate sound definition location: {location}`)
 			continue
 		end
 

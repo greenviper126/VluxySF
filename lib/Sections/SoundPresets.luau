@@ -4,11 +4,11 @@
 
 local library = script.Parent.Parent
 
-local Jitter = require(library.Utility.Jitter)
+local Jitter = require(library.Sections.Jitter)
 
 --[=[
-    @class SoundPresets
-
+	@class SoundPresets
+	
 	A collection of preset functions for applying common sound effects, such as jitter, to Sound instances. These presets can be easily applied to sounds to achieve dynamic and natural variations in sound playback.
 ]=]
 local SoundPresets = {}

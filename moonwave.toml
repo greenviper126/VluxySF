@@ -4,7 +4,19 @@ gitRepoUrl = "https://github.com/greenviper126/VluxySF"
 changelog = true
 gitSourceBranch = "master"
 
-classOrder = ["VluxySF"]
+classOrder = [
+    "VluxySF",
+    "SerializedTypes",
+    "InstancedTypes",
+    "Startup",
+    "Schema",
+    "SoundGroups",
+    "Fetchers",
+    "Conversions",
+    "SoundPresets",
+    "Jitter",
+    "Misc",
+]
 
 [docusaurus]
 organizationName = "VluxEntertainment(Partnership)"

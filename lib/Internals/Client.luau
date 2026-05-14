@@ -7,6 +7,7 @@ local RunService = game:GetService("RunService")
 
 local library = script.Parent.Parent
 
+local FormatMessage = require(library.Utility.FormatMessage)
 local RemoteFunction = require(library.Utility.RemoteFunction)
 
 local Types = require(library.Types)
@@ -31,7 +32,7 @@ local function getDataForClient(): Types.SoundSchema
 	if response then
 		return response
 	else
-		warn("Server did not return sounds to local player, re-attempting!")
+		FormatMessage.Error("Server did not return sounds to local player, re-attempting!")
 
 		task.wait(0.5)
 
@@ -71,7 +72,7 @@ local function setPreloadSounds(timeout: number?)
 			return
 		end
 
-		warn(`Failed to preload sound with assetId {assetId}, status: {assetFetchStatus}`)
+		FormatMessage.Warn(`Failed to preload sound with assetId {assetId}, status: {assetFetchStatus}`)
 	end
 
 	task.spawn(function()
@@ -79,7 +80,7 @@ local function setPreloadSounds(timeout: number?)
 
 		ContentProvider:PreloadAsync(preloadSounds, callback)
 
-		print(`[vluxysf]: Preloaded {#preloadSounds} sounds in {os.clock() - t} seconds!`)
+		FormatMessage.Print(`Preloaded {#preloadSounds} sounds in {os.clock() - t} seconds!`)
 
 		if not complete then
 			return
@@ -93,7 +94,7 @@ local function setPreloadSounds(timeout: number?)
 			return
 		end
 
-		warn("Preloading sounds timed out! Continuing With compile process!")
+		FormatMessage.Warn("Preloading sounds timed out! Continuing with compile process!")
 
 		complete:Fire()
 	end)
@@ -124,7 +125,7 @@ local ClientData = {}
 ]]
 function ClientData._initClient(timeout: number?)
 	if RunService:IsServer() then
-		error("Cannot initialize client on server!")
+		FormatMessage.Error("Cannot initialize client on server!")
 	end
 
 	soundSchema = getDataForClient()

@@ -5,8 +5,8 @@
 local Random = Random.new()
 
 --[=[
-    @class Jitter
-
+	@class Jitter
+	
 	A collection of functions to generate random jitter values for sound properties, allowing for dynamic and natural variations in sound playback.
 ]=]
 local Jitter = {}

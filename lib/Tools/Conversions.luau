@@ -2,7 +2,9 @@
 
 local libarary = script.Parent.Parent
 
+local FormatMessage = require(libarary.Utility.FormatMessage)
 local Properties = require(libarary.Utility.Properties)
+
 local Types = require(libarary.Types)
 
 local ALLOWED_SOUND_CHILDREN = {
@@ -94,7 +96,7 @@ function Conversions.SoundToDefinition(sound: Sound): Types.SoundDefinition
 
 	--effects
 	if #sound:GetDescendants() > #ALLOWED_SOUND_CHILDREN then
-		warn(`{sound.Name} has more children than allowed!`)
+		FormatMessage.Warn(`{sound.Name} has more children than allowed!`)
 	end
 
 	local function getEffect(effectName: string): SoundEffect?
@@ -104,7 +106,7 @@ function Conversions.SoundToDefinition(sound: Sound): Types.SoundDefinition
 		end
 
 		if not child:IsA("SoundEffect") then
-			warn(
+			FormatMessage.Warn(
 				`VluxySF: {child.Name} is not a SoundEffect and will be skipped when converting {sound.Name} to a definition!`
 			)
 			return nil
