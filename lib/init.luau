@@ -6,12 +6,14 @@ local tools = script.Tools
 local utility = script.Utility
 local internals = script.Internals
 
+local Jitter = require(utility.Jitter)
 local Tables = require(utility.Tables)
 
 local Conversions = require(tools.Conversions)
 local Fetching = require(tools.Fetching)
 local Preload = require(tools.Preload)
 local SoundMisc = require(tools.SoundMisc)
+local SoundPresets = require(tools.SoundPresets)
 
 local Types = require(script.Types)
 
@@ -234,8 +236,6 @@ local soundSchema: Types.SoundSchema
 
 local isInitialized = false -- stops the public functions from executing to early if the schema isn't ready.
 
-local Random = Random.new()
-
 ----------------------------------------------------------------------------------------------------------------
 
 local function schemaFailCheck()
@@ -290,6 +290,8 @@ end
 
 	@client
 
+	@yields
+
 	@param timeout number? -- optional timeout for preloading sounds, default is 5 seconds
 
 	Sets up client-side structures and retrieves sound data from the server.
@@ -312,9 +314,14 @@ end
 ----------------------------------------------------------------------------------------------------------------
 
 --[=[
-	@within VluxySF
+	@class Startup
 
-	@tag Startup
+	Functions for checking the initialization status of the sound schema and waiting for it to be ready.
+]=]
+Sounds.Startup = {}
+
+--[=[
+	@within Startup
 
 	@return boolean -- Whether the sound schema has been initialized.
 
@@ -328,14 +335,12 @@ end
 	end
 	```
 ]=]
-function Sounds.IsInitialized(): boolean
+function Sounds.Startup.IsInitialized(): boolean
 	return isInitialized
 end
 
 --[=[ 
-	@within VluxySF
-
-	@tag Startup
+	@within Startup
 
 	@yields
 
@@ -348,14 +353,14 @@ end
 	```lua
 	print("Waiting for sound system to initialize...")
 
-	Sounds.WaitForSchema()
+	Sounds.Startup.WaitForSchema()
 
 	print("Sound system is now initialized and ready to use!")
 
 	--now you can use functions and methods that require the schema!
 	```
 ]=]
-function Sounds.WaitForSchema()
+function Sounds.Startup.WaitForSchema()
 	--I am very aware that this looks janky It will be changed later.
 	repeat
 		task.wait()
@@ -367,9 +372,36 @@ end
 ----------------------------------------------------------------------------------------------------------------
 
 --[=[
-	@within VluxySF
+	@class Schema
 
-	@tag DefinitionData
+	Functions for accessing the sound schema and its data.
+]=]
+Sounds.Schema = {}
+
+--[=[
+	@within Schema
+
+	@tag RequiresSchema
+
+	@return SoundSchema -- The internal sound schema used by the system.
+
+	Provides access to the internal sound schema.
+
+	```lua
+	local schema = Sounds._getSchema()
+
+	print("Unattached sounds folder:", schema.UnattachedSounds)
+	```
+]=]
+function Sounds.Schema.Get(): SoundSchema
+	schemaFailCheck()
+
+	return soundSchema
+end
+
+--[=[
+	@within Schema
+
 	@tag RequiresSchema
 
 	@return SoundDefinitions -- All converted sound data
@@ -386,15 +418,15 @@ end
 	end
 	```
 ]=]
-function Sounds.GetSoundDefinitions(): SoundDefinitions
+function Sounds.Schema.GetDefinitions(): SoundDefinitions
 	schemaFailCheck()
+
 	return soundSchema.SoundDefinitions
 end
 
 --[=[
-	@within VluxySF
+	@within Schema
 
-	@tag DefinitionData
 	@tag RequiresSchema
 
 	@return { string } -- All registered sound locations
@@ -402,14 +434,14 @@ end
 	Returns all sound locations.
 
 	```lua
-	local locations = Sounds.GetSoundLocations()
+	local locations = Sounds.Schema.GetLocations()
 
 	for _, location in ipairs(locations) do
 		print("Sound location:", location)
 	end
 	```
 ]=]
-function Sounds.GetSoundLocations(): { string }
+function Sounds.Schema.GetLocations(): { string }
 	schemaFailCheck()
 
 	local locations = {}
@@ -426,25 +458,30 @@ end
 ----------------------------------------------------------------------------------------------------------------
 
 --[=[
-	@within VluxySF
+	@class SoundGroups
 
-	@tag SoundGroups
+	Functions for getting and setting the created sound groups.
+]=]
+Sounds.Groups = {}
+
+--[=[
+	@within SoundGroups
+	
 	@tag RequiresSchema
 
 	@return SoundGroups -- All sound groups defined in the schema.
 
 	Returns all sound groups defined in the schema.
 ]=]
-function Sounds.GetSoundGroups(): Types.SoundGroups
+function Sounds.Groups.Get(): Types.SoundGroups
 	schemaFailCheck()
 
 	return soundSchema.SoundGroups
 end
 
 --[=[
-	@within VluxySF
+	@within SoundGroups
 
-	@tag SoundGroups
 	@tag RequiresSchema
 
 	@param name string -- The name of the sound group to retrieve.
@@ -453,23 +490,22 @@ end
 
 	Retrieves a sound group instance by its name.
 ]=]
-function Sounds.GetSoundGroup(name: string): SoundGroup?
+function Sounds.Groups.GetByName(name: string): SoundGroup?
 	schemaFailCheck()
 
 	return soundSchema.SoundGroups[name]
 end
 
 --[=[
-	@within VluxySF
+	@within SoundGroups
 
-	@tag SoundGroups
 	@tag RequiresSchema
 
 	@return { string } -- A list of all sound group names defined in the schema.
 
 	Returns a list of all sound group names defined in the schema.
 ]=]
-function Sounds.GetSoundGroupNames(): { string }
+function Sounds.Groups.GetNames(): { string }
 	schemaFailCheck()
 
 	local names = {}
@@ -482,20 +518,19 @@ function Sounds.GetSoundGroupNames(): { string }
 end
 
 --[=[
-	@within VluxySF
+	@within SoundGroups
 
-	@tag SoundGroups
 	@tag RequiresSchema
 
 	@param volumes { [string]: number } -- A dictionary mapping sound group names to their desired volume levels.
 
 	Sets the volume levels for multiple sound groups at once based on the provided dictionary of group names and volume values.
 ]=]
-function Sounds.SetSoundGroupVolumes(volumes: { [string]: number })
+function Sounds.Groups.SetVolumes(volumes: { [string]: number })
 	schemaFailCheck()
 
 	for groupName, volume in pairs(volumes) do
-		local group = Sounds.GetSoundGroup(groupName)
+		local group = Sounds.Groups.GetByName(groupName)
 
 		if not group then
 			warn(`VluxySF: Attempted to set volume for sound group '{groupName}', but it does not exist in schema!`)
@@ -511,9 +546,15 @@ end
 ----------------------------------------------------------------------------------------------------------------
 
 --[=[
-	@within VluxySF
+	@class Fetchers
 
-	@tag Fetcher
+	Functions for fetching and creating sounds based on the defined schema.
+]=]
+Sounds.Fetch = {}
+
+--[=[
+	@within Fetchers
+
 	@tag RequiresSchema
 
 	@param location string -- The direct location of the `SoundDefinition` or the name of the `SoundDefinition`.
@@ -523,7 +564,7 @@ end
 	
 	Finds the specified `SoundDefinition` and gives back a playable `Sound` if it exists.
 ]=]
-function Sounds.Fetch(location: string, preset: (Sound) -> ()?): Types.SoundDefinitionInstanced?
+function Sounds.Fetch.Now(location: string, preset: (Sound) -> ()?): Types.SoundDefinitionInstanced?
 	schemaFailCheck()
 
 	local isDirect = #location:split("/") ~= 1
@@ -555,9 +596,8 @@ function Sounds.Fetch(location: string, preset: (Sound) -> ()?): Types.SoundDefi
 end
 
 --[=[
-	@within VluxySF
+	@within Fetchers
 
-	@tag Fetcher
 	@tag RequiresSchema
 
 	@param groupName string -- The name of the sound group to search within.
@@ -568,7 +608,11 @@ end
 
 	Similar to `Fetch`, but is more accurate than fetching by name but less accurate then the full location. A middle ground so you can write less and still somewhat specify!
 ]=]
-function Sounds.FetchFromGroup(groupName: string, name: string, preset: (Sound) -> ()?): Types.SoundDefinitionInstanced?
+function Sounds.Fetch.FromGroup(
+	groupName: string,
+	name: string,
+	preset: (Sound) -> ()?
+): Types.SoundDefinitionInstanced?
 	schemaFailCheck()
 
 	local location = Fetching.FromSoundGroup(soundSchema, groupName, name)
@@ -592,9 +636,8 @@ function Sounds.FetchFromGroup(groupName: string, name: string, preset: (Sound) 
 end
 
 --[=[
-	@within VluxySF
+	@within Fetchers
 
-	@tag Fetcher
 	@tag RequiresSchema
 
 	@param name string -- The name of the sound definition to fetch.
@@ -605,10 +648,10 @@ end
 
 	Fetches a sound, sets it up for one-time playback, and optionally waits for it to load before playing. The sound will be automatically cleaned up after it finishes playing.
 ]=]
-function Sounds.FetchPlayOnce(name: string, preset: (Sound) -> ()?, waitOnLoad: boolean?)
+function Sounds.Fetch.PlayOnce(name: string, preset: (Sound) -> ()?, waitOnLoad: boolean?)
 	schemaFailCheck()
 
-	local sound = Sounds.Fetch(name, preset)
+	local sound = Sounds.Fetch.Now(name, preset)
 
 	if not sound then
 		return nil
@@ -642,9 +685,14 @@ end
 ----------------------------------------------------------------------------------------------------------------
 
 --[=[
-	@within VluxySF
+	@class Conversions
 
-	@tag Conversions
+	Functions for converting between Sound instances and SoundDefinitions.
+]=]
+Sounds.Conversions = {}
+
+--[=[
+	@within Conversions
 
 	@param sound -- The Sound instance to convert.
 
@@ -652,14 +700,12 @@ end
 
 	Converts a Roblox Sound instance into a SoundDefinition.
 ]=]
-function Sounds.ToDefinition(sound: Sound): SoundDefinition
+function Sounds.Conversions.ToDefinition(sound: Sound): SoundDefinition
 	return Conversions.SoundToDefinition(sound)
 end
 
 --[=[
-	@within VluxySF
-
-	@tag Conversions
+	@within Conversions
 
 	@param definition SoundDefinition -- The SoundDefinition to convert.
 
@@ -667,7 +713,7 @@ end
 
 	Converts a SoundDefinition back into a playable Roblox Sound instance.
 ]=]
-function Sounds.FromDefinition(definition: SoundDefinition): Types.SoundDefinitionInstanced
+function Sounds.Conversions.FromDefinition(definition: SoundDefinition): Types.SoundDefinitionInstanced
 	return Conversions.DefinitionToSound(definition)
 end
 
@@ -689,88 +735,8 @@ function Sounds.PreloadSelected(...: string | Sound | SoundDefinition)
 end
 
 ----------------------------------------------------------------------------------------------------------------
---PRESETS-------------------------------------------------------------------------------------------------------
-----------------------------------------------------------------------------------------------------------------
-
---[[
-	Defines preset functions that can be applied to sounds to modify their properties in specific ways, such as adding natural jitter to make them sound more dynamic and less repetitive.
-]]
-Sounds.Presets = {}
-
---[=[
-	@within VluxySF
-
-	@tag Preset
-
-	@param center number? -- The central value around which the jitter will occur (default: 1).
-	@param spread number? -- The maximum deviation from the center value (default: 0.1).
-	@param parent Instance? -- The parent instance to which the sound will be attached after applying the preset.
-
-	@return (Sound) -> () -- A preset function that applies natural jitter to a sound's volume and playback speed, creating more dynamic and less repetitive audio effects.
-
-	applys a unitLog jitter to volume and pitch with an option to set the parent.
-]=]
-function Sounds.Presets.NaturalJitter(center: number?, spread: number?, parent: Instance?): (Sound) -> ()
-	local jitter = Sounds.JitterUnitLog(center or 1, spread or 0.1)
-
-	return function(sound: Sound)
-		sound.Volume *= jitter()
-		sound.PlaybackSpeed *= jitter()
-
-		sound.Parent = parent
-	end
-end
-
---[=[
-	@within VluxySF
-
-	@tag Preset
-
-	@param center number? -- The central value around which the jitter will occur (default: 1).
-	@param spread number? -- The maximum deviation from the center value (default: 0.1).
-	@param parent Instance? -- The parent instance to which the sound will be attached after applying the preset.
-
-	@return (Sound) -> () -- A preset function that applies random jitter to a sound's volume and playback speed, creating more dynamic and less repetitive audio effects.
-
-	applys a random jitter to volume and pitch with an option to set the parent.
-]=]
-function Sounds.Presets.RandomJitter(center: number?, spread: number?, parent: Instance?): (Sound) -> ()
-	local jitter = Sounds.Jitter(center or 1, spread or 0.1)
-
-	return function(sound: Sound)
-		sound.Volume *= jitter()
-		sound.PlaybackSpeed *= jitter()
-
-		sound.Parent = parent
-	end
-end
-
-----------------------------------------------------------------------------------------------------------------
 --MISC----------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------
-
---[=[
-	@within VluxySF
-
-	@tag RequiresSchema
-
-	@private
-
-	@return SoundSchema -- The internal sound schema used by the system.
-
-	Provides access to the internal sound schema.
-
-	```lua
-	local schema = Sounds._getSchema()
-
-	print("Unattached sounds folder:", schema.UnattachedSounds)
-	```
-]=]
-function Sounds._getSchema()
-	schemaFailCheck()
-
-	return soundSchema
-end
 
 --[=[
 	@within VluxySF
@@ -795,88 +761,16 @@ function Sounds.GetPlayLength(sound: Sound): number
 end
 
 ----------------------------------------------------------------------------------------------------------------
+--PRESETS-------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------
+
+Sounds.Presets = SoundPresets
+
+----------------------------------------------------------------------------------------------------------------
 --JITTER_FUNCTIONS----------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------
 
---[=[
-	@within VluxySF
-
-	@tag Jitter
-
-	@param center number -- The central value around which the jitter will occur.
-	@param spread number -- The maximum deviation from the center value.
-
-	@return () -> number -- A function that generates a random jitter value when called.
-
-	Jitter function for sound properties.
-]=]
-function Sounds.Jitter(center: number, spread: number): () -> number
-	return function()
-		local j = (Random:NextNumber() * 2 - 1) * spread
-
-		return math.clamp(center + j, 0, 10)
-	end
-end
-
---[=[
-	@within VluxySF
-
-	@tag Jitter
-
-	@param min number -- The minimum value for the jitter range.
-	@param max number -- The maximum value for the jitter range.
-
-	@return () -> number -- A function that generates a random jitter value within the specified range when called.
-
-	Jitter function that generates a random value within a specified range.
-]=]
-function Sounds.JitterRange(min: number, max: number): () -> number
-	return function()
-		local j = Random:NextNumber(min, max)
-
-		return math.clamp(j, 0, 10)
-	end
-end
-
---[=[
-	@within VluxySF
-
-	@tag Jitter
-
-	@param spread number -- The maximum percentage deviation from the base value (e.g., 0.1 for ±10% jitter).
-
-	@return () -> number -- A function that generates a random jitter multiplier when called.
-
-	Jitter function that generates a random multiplier around 1, allowing for percentage-based variation.
-]=]
-function Sounds.JitterScale(spread: number): () -> number
-	return function()
-		local j = (Random:NextNumber() * 2 - 1) * spread
-
-		return math.clamp(1 + j, 0, 10)
-	end
-end
-
---[=[
-	@within VluxySF
-
-	@tag Jitter
-
-	@param center number -- The central value around which the jitter will occur.
-	@param spread number -- The maximum deviation from the center value.
-
-	@return () -> number -- A function that generates a random jitter value with a shaped distribution when called.
-
-	Jitter function that produces values with a shaped distribution, creating more natural variations around the center value.
-]=]
-function Sounds.JitterUnitLog(center: number, spread: number): () -> number
-	return function()
-		local r = (Random:NextNumber() * 2 - 1) * spread
-		local shaped = r / (1 + math.abs(r) * 3)
-
-		return math.clamp(center + shaped, 0, 10)
-	end
-end
+Sounds.Jitter = Jitter
 
 ----------------------------------------------------------------------------------------------------------------
 
