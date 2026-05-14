@@ -22,7 +22,7 @@ local ALLOWED_SOUND_CHILDREN = {
 --[[
     Module responsible for converting Sound instances to SoundDefinitions and vice versa.
 ]]
-local Conversions = {}
+local Converters = {}
 
 --[[
 	Converts a SoundConfig to a list of SoundGroups.
@@ -32,7 +32,7 @@ local Conversions = {}
 
 	@return SoundGroups -- A table of SoundGroups created from the SoundConfig.
 ]]
-function Conversions.SoundConfigToSoundGroups(soundConfig: Configuration, parent: Instance): Types.SoundGroups
+function Converters.SoundConfigToSoundGroups(soundConfig: Configuration, parent: Instance): Types.SoundGroups
 	local soundGroups: Types.SoundGroups = {}
 
 	--first set of children defines sound groups
@@ -54,7 +54,7 @@ end
 
 	@return { string } -- A list of SoundIds to preload.
 ]]
-function Conversions.SoundConfigToPreloadIds(soundConfig: Configuration): { string }
+function Converters.SoundConfigToPreloadIds(soundConfig: Configuration): { string }
 	local preloadIds = {}
 
 	local preloadFolders = soundConfig:QueryDescendants("#_Preload")
@@ -83,7 +83,7 @@ end
 
     @return SoundDefinition -- The created Definition
 ]]
-function Conversions.SoundToDefinition(sound: Sound): Types.SoundDefinition
+function Converters.SoundToDefinition(sound: Sound): Types.SoundDefinition
 	local definition = {
 		Properties = {},
 		Effects = {},
@@ -140,7 +140,7 @@ end
 
     @return Sound -- The created Sound
 ]]
-function Conversions.DefinitionToSound(definition: Types.SoundDefinition): Types.SoundDefinitionInstanced
+function Converters.DefinitionToSound(definition: Types.SoundDefinition): Types.SoundDefinitionInstanced
 	local sound = Instance.new("Sound")
 	sound:AddTag("VLUXY_SOUND_FACTORY_INSTANCE") --lets the system know what sound was created by VluxySF
 
@@ -171,4 +171,4 @@ function Conversions.DefinitionToSound(definition: Types.SoundDefinition): Types
 	return sound :: Types.SoundDefinitionInstanced
 end
 
-return Conversions
+return Converters

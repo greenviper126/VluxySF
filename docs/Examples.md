@@ -8,6 +8,8 @@ sidebar_position: 5
 
 Explore practical usage patterns for VluxySF. These examples cover basic playback, group volume control, preloading, and advanced sound entity manipulation.
 
+THIS PAGE IS OUTDATED!
+
 ---
 ---
 

@@ -7,15 +7,15 @@ local utility = script.Utility
 local internals = script.Internals
 local sections = script.Sections
 
+local FormatMessage = require(utility.FormatMessage)
 local Tables = require(utility.Tables)
 
-local Conversions = require(tools.Conversions)
+local Converters = require(tools.Converters)
 local Fetching = require(tools.Fetching)
-local FormatMessage = require(utility.FormatMessage)
-local Preload = require(tools.Preload)
-local SoundMisc = require(tools.SoundMisc)
 
+local Conversions = require(sections.Conversions)
 local Jitter = require(sections.Jitter)
+local Misc = require(sections.Misc)
 local SoundPresets = require(sections.SoundPresets)
 
 local Types = require(script.Types)
@@ -58,11 +58,20 @@ export type TremoloSoundEffectSerialized = Types.TremoloSoundEffectSerialized
 
 local soundSchema: Types.SoundSchema
 
-local initializedEvent = Instance.new("BindableEvent", script)
-local isInitialized = false -- stops the public functions from executing to early if the schema isn't ready.
+----------------------------------------------------------------------------------------------------------------
 
-local schemaFailCheck =
-	FormatMessage.ErrorThunk("Sound schema is not initialized yet! You need to wait before you can use this function!")
+local initializedEvent = Instance.new("BindableEvent")
+initializedEvent.Parent = script
+
+local isInitialized = false
+
+local schemaFailCheck = function()
+	if isInitialized then
+		return
+	end
+
+	FormatMessage.Error("Sound schema is not initialized yet! You need to wait before you can use this function!")
+end
 
 ----------------------------------------------------------------------------------------------------------------
 
@@ -347,17 +356,17 @@ function Sounds.Fetch.Now(location: string, preset: (Sound) -> ()?): Types.Sound
 	end
 
 	if not realLocation then
-		warn(`VluxySF: Sound with location or name '{location}' was not found in schema!`)
+		FormatMessage.Warn(`Sound with location or name '{location}' was not found in schema!`)
 		return nil
 	end
 
 	local definition = soundSchema.SoundDefinitions[realLocation]
 	if not definition then
-		warn(`VluxySF: SoundDefinition for location '{realLocation}' was not found in schema!`)
+		FormatMessage.Warn(`SoundDefinition for location '{realLocation}' was not found in schema!`)
 		return nil
 	end
 
-	local sound = Conversions.DefinitionToSound(definition)
+	local sound = Converters.DefinitionToSound(definition)
 	if preset then
 		preset(sound)
 	end
@@ -385,17 +394,17 @@ function Sounds.Fetch.FromGroup(
 
 	local location = Fetching.FromSoundGroup(soundSchema, groupName, name)
 	if not location then
-		warn(`VluxySF: Sound with name '{name}' was not found in sound group '{groupName}'!`)
+		FormatMessage.Warn(`Sound with name '{name}' was not found in sound group '{groupName}'!`)
 		return nil
 	end
 
 	local definition = soundSchema.SoundDefinitions[location]
 	if not definition then
-		warn(`VluxySF: SoundDefinition for location '{location}' was not found in schema!`)
+		FormatMessage.Warn(`SoundDefinition for location '{location}' was not found in schema!`)
 		return nil
 	end
 
-	local sound = Conversions.DefinitionToSound(definition)
+	local sound = Converters.DefinitionToSound(definition)
 	if preset then
 		preset(sound)
 	end
@@ -450,38 +459,7 @@ end
 --SOUND_CONVERSIONS---------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------
 
---[=[
-	@class Conversions
-
-	Functions for converting between Sound instances and SoundDefinitions.
-]=]
-Sounds.Conversions = {}
-
---[=[
-	@within Conversions
-
-	@param sound -- The Sound instance to convert.
-
-	@return SoundDefinition -- The resulting SoundDefinition based on the properties and effects of the provided Sound instance.
-
-	Converts a Roblox Sound instance into a SoundDefinition.
-]=]
-function Sounds.Conversions.ToDefinition(sound: Sound): SoundDefinition
-	return Conversions.SoundToDefinition(sound)
-end
-
---[=[
-	@within Conversions
-
-	@param definition SoundDefinition -- The SoundDefinition to convert.
-
-	@return Sound -- The resulting Sound instance based on the properties and effects defined in the provided SoundDefinition.
-
-	Converts a SoundDefinition back into a playable Roblox Sound instance.
-]=]
-function Sounds.Conversions.FromDefinition(definition: SoundDefinition): Types.SoundDefinitionInstanced
-	return Conversions.DefinitionToSound(definition)
-end
+Sounds.Conversions = Conversions
 
 ----------------------------------------------------------------------------------------------------------------
 --PRESETS-------------------------------------------------------------------------------------------------------
@@ -499,42 +477,6 @@ Sounds.Jitter = Jitter
 --MISC----------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------
 
---[=[
-	@class Misc
-
-	Functions for miscellaneous sound-related tasks that don't fit into other categories.
-]=]
-Sounds.Misc = {}
-
---[=[
-	@within Misc
-
-	@param ... string | Sound | SoundDefinition -- A variable number of sound identifiers, which can be sound locations, Sound instances, or SoundDefinitions.
-
-	Preloads through ContentProvider.
-]=]
-function Sounds.Misc.PreloadSelected(...: string | Sound | SoundDefinition)
-	return Preload.Selected(...)
-end
-
---[=[
-	@within Misc
-
-	@param sound Sound -- The sound instance to analyze.
-
-	@return number -- The estimated play length of the sound, including any variations in playback speed.
-
-	Calculates the estimated play length of a sound instance by considering its SoundId and any attached sound effects that may influence its duration.
-
-	```lua
-	local soundInstance: Sound = --[[ reference to an existing Sound instance ]]
-	local estimatedLength = Sounds.GetPlayLength(soundInstance)
-
-	print("Play length:", estimatedLength, "seconds")
-	```
-]=]
-function Sounds.Misc.GetPlayLength(sound: Sound): number
-	return SoundMisc.GetEstimatedPlayLength(sound)
-end
+Sounds.Misc = Misc
 
 return Sounds

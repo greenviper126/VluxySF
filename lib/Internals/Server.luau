@@ -12,7 +12,7 @@ local FormatMessage = require(library.Utility.FormatMessage)
 local Ratelimit = require(library.Utility.RateLimit)
 local RemoteFunction = require(library.Utility.RemoteFunction)
 
-local Conversions = require(library.Tools.Conversions)
+local Converters = require(library.Tools.Converters)
 local Fetching = require(library.Tools.Fetching)
 local Hasher = require(library.Tools.Hasher)
 
@@ -67,7 +67,7 @@ local function setGroupedSounds(soundDefinitions: Types.SoundDefinitions, childF
 
 		--creates a sound definition
 		local success, result = pcall(function()
-			local newDefinition = Conversions.SoundToDefinition(sound)
+			local newDefinition = Converters.SoundToDefinition(sound)
 			newDefinition.Properties.SoundGroup = childFolder.Name --add to sound group
 
 			return newDefinition
@@ -110,7 +110,7 @@ end
 ]]
 local function initializeServerSoundSystem(soundFolder: Configuration)
 	--set groups
-	soundSchema.SoundGroups = Conversions.SoundConfigToSoundGroups(soundFolder, soundSchema.SoundGroupContainer)
+	soundSchema.SoundGroups = Converters.SoundConfigToSoundGroups(soundFolder, soundSchema.SoundGroupContainer)
 
 	--convert Sounds
 	soundSchema.SoundDefinitions = createSoundDefinitions(soundFolder)
@@ -119,7 +119,7 @@ local function initializeServerSoundSystem(soundFolder: Configuration)
 	soundSchema.DefinitionsGroupHash = Hasher.HashGroups(soundSchema)
 
 	--set preload
-	soundSchema.PreloadIds = Conversions.SoundConfigToPreloadIds(soundFolder)
+	soundSchema.PreloadIds = Converters.SoundConfigToPreloadIds(soundFolder)
 
 	soundFolder:Destroy() --destroy folder after converting sounds to definitions to save memory
 
